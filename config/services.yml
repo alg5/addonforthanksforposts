@@ -1,0 +1,28 @@
+services:
+    alg.AddonForThanksForPosts.listener:
+        class: alg\AddonForThanksForPosts\event\listener
+        arguments:
+            - @config
+            - @dbal.conn
+            - @auth
+            - @template
+            - @user
+            - @cache.driver
+            - %core.root_path%
+            - %core.php_ext%
+        tags:
+            - { name: event.listener }
+    alg.AddonForThanksForPosts.thanks_ajax_handler:
+        class: alg\AddonForThanksForPosts\controller\thanks_ajax_handler
+        arguments:
+            - @config
+            - @dbal.conn
+            - @auth
+            - @template
+            - @user
+            - @cache.driver
+            - %core.root_path%
+            - %core.php_ext%
+            - @request
+            - %core.table_prefix%
+            - @gfksx.ThanksForPosts.helper

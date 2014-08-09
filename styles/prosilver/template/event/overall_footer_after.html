@@ -1,0 +1,38 @@
+<!-- IF S_TOPIC_ID && S_FORUM_THANKS -->
+<script type="text/javascript" >
+    var L_CLEAR_LIST_THANKS = '{L_CLEAR_LIST_THANKS}';
+    var L_REPUT = '{L_REPUT}';
+    var L_RECEIVED = '{L_RECEIVED}';
+    var L_GIVEN = '{L_GIVEN}';
+    var L_CLEAR_LIST_THANKS_CONFIRM = '{L_CLEAR_LIST_THANKS_CONFIRM}';
+    var L_YES = '{L_YES}';
+    var L_NO = '{L_NO}';
+    var forum_id = parseInt( '{S_FORUM_ID}');
+    var topic_id = parseInt('{S_TOPIC_ID}');
+</script>
+<script type="text/javascript" >
+(function ($) {
+    if (typeof ($.noty) !== 'object') {
+        $.getScript('./ext/alg/AddonForThanksForPosts/styles/prosilver/template/jquery.noty.js', function () {
+            $.getScript('./ext/alg/AddonForThanksForPosts/styles/prosilver/template/default.js');
+            $.getScript('./ext/alg/AddonForThanksForPosts/styles/prosilver/template/topRight.js');
+            $.getScript('./ext/alg/AddonForThanksForPosts/styles/prosilver/template/topCenter.js');
+        });
+    }
+    else {
+        if (typeof ($.noty.themes.defaultTheme) !== 'object') {
+            $.getScript('./ext/alg/AddonForThanksForPosts/styles/prosilver/template/default.js');
+        }
+        if (typeof ($.$.noty.layouts.topRight) !== 'object') {
+            $.getScript('./ext/alg/AddonForThanksForPosts/styles/prosilver/template/topRight.js');
+        }
+        if (typeof ($.$.noty.layouts.topCenter) !== 'object') {
+            $.getScript('./ext/alg/AddonForThanksForPosts/styles/prosilver/template/topCenter.js');
+        }
+    }
+})(jQuery);                                    // Avoid conflicts with other libraries
+
+</script>
+<!-- INCLUDEJS addon_for_thanks_for_posts.js -->
+<!-- ENDIF -->
+
