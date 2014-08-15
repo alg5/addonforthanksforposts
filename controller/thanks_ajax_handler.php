@@ -172,7 +172,7 @@ protected $thankers = array();
                 $poster_name_full =  '';
                 $this->get_poster_details($poster_id, $poster_name, $poster_name_full);
                 $action_togle = $action == 'thanks' ? 'rthanks' : 'thanks' ;
-                $path = './app.php/thanks_for_posts/' . $action_togle . '/' . $poster_id . '/' . $forum_id . '/' . $topic_id . '/' . $post_id;
+                $path = './app.php/thanks_for_posts/' . $action_togle . '/' . $poster_id . '/' . $forum_id . '/' . $topic_id . '/' . $post_id . '?to_id=' . $poster_id;
                 $thank_alt = ($action == 'thanks' ? $this->user->lang['REMOVE_THANKS'] :  $this->user->lang['THANK_POST']) . $poster_name_full;
                 $class_icon = $action == 'thanks' ? 'removethanks-icon' : 'thanks-icon';
                 $thank_img = "<a  href='" .  $path . "'   data-ajax='togle_thanks' title='" . $thank_alt . "' class='button icon-button " .  $class_icon . "'><span>&nbsp;</span></a>";
@@ -246,7 +246,7 @@ protected $thankers = array();
                     'POSTER_ID'	            => $poster_id,	
                     'USER_ID'	            => $this->user->data['user_id'],	
                     'THANK_ALT'		=> $this->user->lang['THANK_POST'] . $poster_name,
-  		            'THANK_PATH'		=> './app.php/thanks_for_posts/thanks/' . $poster_id . '/' . $forum_id . '/' . $topic_id . '/' . $post_id,
+  		            'THANK_PATH'		=> './app.php/thanks_for_posts/thanks/' . $poster_id . '/' . $forum_id . '/' . $topic_id . '/' . $post_id . '?to_id=' . $poster_id,
  			        'S_POST_ANONYMOUS'			=> ($poster_id == ANONYMOUS) ? true : false,
 		            'POSTER_RECEIVE_COUNT'		=> $poster_receive_count,
 				    'POSTER_RECEIVE_COUNT_LINK'	=> append_sid("{$this->phpbb_root_path}thankslist.$this->php_ext", "mode=givens&amp;author_id={$poster_id}&amp;give=false"),

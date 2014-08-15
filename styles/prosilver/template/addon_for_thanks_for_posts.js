@@ -10,9 +10,8 @@
               
                 var post_block = $(this).parents('div.post');
                 var post_id = $(post_block).attr('id').replace(/p/g, '');
-                var url =$(post_block).find('.postprofile').find('dt').find('a').attr('href');
-                var poster_id =  $.urlParam('u', url);
-              
+                var url =$('#lnk_thanks_post' + post_id).attr('href');
+                var poster_id =  $.urlParam('to_id', url);
                 var path = './app.php/AddonForThanksForPosts/' + action + '/' + poster_id + '/' + forum_id + '/' + topic_id +  '/' +  post_id;
                  $.ajax({
 		                type: 'POST',
