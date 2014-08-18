@@ -39,7 +39,7 @@ protected $thankers = array();
 
 	public function main($action, $poster, $forum, $topic, $post)
 	{
-		// Grab data
+        $this->user->add_lang_ext('gfksx/ThanksForPosts', 'thanks_mod');		// Grab data
         switch ($action)
         {
             case 'thanks':
@@ -52,9 +52,8 @@ protected $thankers = array();
            
             default:
                 $this->error[] = array('error' => $this->user->lang['INCORRECT_THANKS']);
-            
-
         }
+        
         if (sizeof($this->error))
         {
             $return_error = array();
@@ -81,7 +80,6 @@ protected $thankers = array();
     
     private function thanks_for_post($action, $poster_id, $forum_id, $topic_id, $post_id)
     {
-		$this->user->add_lang_ext('gfksx/ThanksForPosts', 'thanks_mod');
             $user_id = (int)$this->user->data['user_id'];
             if ($this->user->data['user_type'] != USER_IGNORE && !empty($poster_id))
 	        {
@@ -213,7 +211,6 @@ protected $thankers = array();
     
     private function clear_list_thanks($poster_id, $forum_id, $topic_id, $post_id)
     {
-		$this->user->add_lang_ext('gfksx/ThanksForPosts', 'thanks_mod');
         $sql = "DELETE FROM " . THANKS_TABLE . '
 		WHERE post_id  = ' . (int)$post_id;				
 	    $result = $this->db->sql_query($sql);		
