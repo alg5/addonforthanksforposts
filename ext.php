@@ -18,6 +18,5 @@ class ext extends \phpbb\extension\base
     {
         global $phpbb_extension_manager;
         return $phpbb_extension_manager->is_enabled('gfksx/ThanksForPosts');
-   }
+    }
 }
-

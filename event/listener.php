@@ -26,8 +26,8 @@ class listener implements EventSubscriberInterface
 {
     public function __construct(\phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\auth\auth $auth, \phpbb\template\template $template, \phpbb\user $user, \phpbb\cache\driver\driver_interface $cache, $phpbb_root_path, $php_ext)
     {
-	    $this->config = $config;
-		$this->db = $db;
+        $this->config = $config;
+        $this->db = $db;
 		$this->auth = $auth;
         $this->template = $template;
         $this->user = $user;
@@ -39,7 +39,7 @@ class listener implements EventSubscriberInterface
 	static public function getSubscribedEvents()
 	{
 		return array(
-            'core.viewtopic_modify_page_title'		                => 'viewtopic_modify_page_title',
+            'core.viewtopic_modify_page_title'  => 'viewtopic_modify_page_title',
         );
 	}
 
@@ -48,7 +48,7 @@ class listener implements EventSubscriberInterface
         $this->user->add_lang_ext('gfksx/ThanksForPosts', 'thanks_mod');
         global $forum_id;
         $this->template->assign_vars(array(
-	        'S_FORUM_THANKS'	=> (bool)($this->auth->acl_get('f_thanks', $forum_id)) ,
+            'S_FORUM_THANKS'	=> (bool)($this->auth->acl_get('f_thanks', $forum_id)) ,
             ));
     }
 }

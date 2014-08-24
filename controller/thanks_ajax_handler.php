@@ -37,8 +37,8 @@ protected $thankers = array();
         $this->error = array(); // save errors in here
     }
 
-	public function main($action, $poster, $forum, $topic, $post)
-	{
+    public function main($action, $poster, $forum, $topic, $post)
+    {
         $this->user->add_lang_ext('gfksx/ThanksForPosts', 'thanks_mod');		// Grab data
         switch ($action)
         {
@@ -66,106 +66,97 @@ protected $thankers = array();
         }
         else
         {
- 	        $json_response = new \phpbb\json_response;
-	        $json_response->send($this->return);
+            $json_response = new \phpbb\json_response;
+            $json_response->send($this->return);
         }
 	}
-    
+
     private function thanks_for_post($action, $poster_id, $forum_id, $topic_id, $post_id)
     {
-            $user_id = (int)$this->user->data['user_id'];
-            if ($this->user->data['user_type'] != USER_IGNORE && !empty($poster_id))
-	        {
-                switch ($action)
-                {
-                    case 'thanks':
-		                if ($poster_id != $user_id  && !$this->already_thanked($post_id, $user_id) && ($this->auth->acl_get('f_thanks', $forum_id) || (!$forum_id && (isset($this->config['thanks_global_post']) ? $this->config['thanks_global_post'] : false))) )
-		                { 
-                            $thanks_time = time();
-                            $this->user->data['user_id'];
-                            
-                            $thanks_data = array(
-				                'user_id'	=> $user_id,
-				                'post_id'	=> $post_id,
-				                'poster_id'	=> $poster_id,
-				                'topic_id'	=> $topic_id,
-				                'forum_id'	=> $forum_id,
-				                'thanks_time'	=> $thanks_time,
-			                );
-                            
-                            //add to DB
-			                $sql = 'INSERT INTO ' . THANKS_TABLE . ' ' . $this->db->sql_build_array('INSERT', $thanks_data);
-			                $this->db->sql_query($sql); 
-                            
-                            //notification
-				            $thanks_data = array_merge($thanks_data, array(
-					            'username'	=> $this->user->data['username'],
-					            'lang_act'	=> 'GIVE',
-					            'post_subject'	=> $this->get_post_subject($post_id),
-				            ));
-
-				            $this->gfksx_helper->add_notification($thanks_data);
-                            
-	                    }           
- 	                    else
-		                {
-                            $this->error[] = array('error' => $this->user->lang['GLOBAL_INCORRECT_THANKS']);
-
-                        }
-                        break;
-                    case 'rthanks':
-                        if (isset($this->config['remove_thanks']) ? !$this->config['remove_thanks'] : true)
-	                    {
-                            $this->error[] = array('error' => $this->user->lang['DISABLE_REMOVE_THANKS']);
-                           return;
-                            
-	                    }   
-                            
-                        $sql = "DELETE FROM " . THANKS_TABLE . '
-                                        WHERE post_id ='.  $post_id ." AND user_id = " . (int) $user_id;
-                                    $this->db->sql_query($sql);
-                                    $result = $this->db->sql_affectedrows($sql);
-                        if ($result == 0)
-                        {
-                            $this->error[] = array('error' => $this->user->lang['INCORRECT_THANKS']);
-                        }
-                        
-                        break; 
-                    default:
-                    
-                    
-                }//end switch
-            }
-            $i = 0;
-  
-  
-            //max post thanks
-            if (isset($this->config['thanks_post_reput_view']) ? $this->config['thanks_post_reput_view'] : false)
+        $user_id = (int)$this->user->data['user_id'];
+        if ($this->user->data['user_type'] != USER_IGNORE && !empty($poster_id))
+        {
+            switch ($action)
             {
-                $sql = 'SELECT MAX(tally) AS max_post_thanks
-                    FROM (SELECT post_id, COUNT(*) AS tally FROM ' . THANKS_TABLE . ' GROUP BY post_id) t';
-                $result = $this->db->sql_query($sql);
-                $max_post_thanks = (int) $this->db->sql_fetchfield('max_post_thanks');
-                $this->db->sql_freeresult($result);
-            }
-            else
-            {
+                case 'thanks':
+                    if ($poster_id != $user_id  && !$this->already_thanked($post_id, $user_id) && ($this->auth->acl_get('f_thanks', $forum_id) || (!$forum_id && (isset($this->config['thanks_global_post']) ? $this->config['thanks_global_post'] : false))) )
+                    { 
+                        $thanks_time = time();
+                        $this->user->data['user_id'];
+                            
+                        $thanks_data = array(
+                        'user_id'	=> $user_id,
+                        'post_id'	=> $post_id,
+                        'poster_id'	=> $poster_id,
+                        'topic_id'	=> $topic_id,
+                        'forum_id'	=> $forum_id,
+                        'thanks_time'	=> $thanks_time,
+                        );
+                        //add to DB
+                        $sql = 'INSERT INTO ' . THANKS_TABLE . ' ' . $this->db->sql_build_array('INSERT', $thanks_data);
+                        $this->db->sql_query($sql); 
+                            
+                        //notification
+                        $thanks_data = array_merge($thanks_data, array(
+                        'username'	=> $this->user->data['username'],
+                        'lang_act'	=> 'GIVE',
+                        'post_subject'	=> $this->get_post_subject($post_id),
+                        ));
+                        $this->gfksx_helper->add_notification($thanks_data);
+                            
+                    }           
+                    else
+                    {
+                        $this->error[] = array('error' => $this->user->lang['GLOBAL_INCORRECT_THANKS']);
+                    }
+                    break;
+                case 'rthanks':
+                    if (isset($this->config['remove_thanks']) ? !$this->config['remove_thanks'] : true)
+                    {
+                        $this->error[] = array('error' => $this->user->lang['DISABLE_REMOVE_THANKS']);
+                        return;
+                    } 
+                    $sql = "DELETE FROM " . THANKS_TABLE . '
+                                WHERE post_id ='.  $post_id ." AND user_id = " . (int) $user_id;
+                    $this->db->sql_query($sql);
+                    $result = $this->db->sql_affectedrows($sql);
+                    if ($result == 0)
+                    {
+                        $this->error[] = array('error' => $this->user->lang['INCORRECT_THANKS']);
+                    }
+                    break; 
+                default:
+            }//end switch
+        }
+        $i = 0;
+
+        //max post thanks
+        if (isset($this->config['thanks_post_reput_view']) ? $this->config['thanks_post_reput_view'] : false)
+        {
+            $sql = 'SELECT MAX(tally) AS max_post_thanks
+                FROM (SELECT post_id, COUNT(*) AS tally FROM ' . THANKS_TABLE . ' GROUP BY post_id) t';
+            $result = $this->db->sql_query($sql);
+            $max_post_thanks = (int) $this->db->sql_fetchfield('max_post_thanks');
+            $this->db->sql_freeresult($result);
+        }
+        else
+        {
             $max_post_thanks = 1;
-            }
-                //give-receive counters
-                $sql = 'SELECT  (select count(user_id) FROM ' . THANKS_TABLE .  ' WHERE user_id=' . $user_id . ') give, ' .
-                            '  (select count(poster_id)     FROM  ' . THANKS_TABLE .  ' WHERE  poster_id = ' . $poster_id . ') rcv ';
-                        $result = $this->db->sql_query($sql);
-                $row_giv_rcv = $this->db->sql_fetchrow($result);
-                $poster_give_count = $row_giv_rcv['give'];                    
-                $poster_receive_count = $row_giv_rcv['rcv'];                    
-                $this->db->sql_freeresult($result);
-                $l_poster_receive_count = ($poster_receive_count) ? $this->user->lang('THANKS', $poster_receive_count) : '';
-		        $l_poster_give_count = ($poster_give_count) ? $this->user->lang('THANKS', $poster_give_count) : '';
-                $thanks_number = 0;
-                $thanks_list =  $this->get_thanks($post_id, $thanks_number);
-                $post_reput = ($thanks_number != 0) ? round($thanks_number / ($max_post_thanks / 100), $this->config['thanks_number_digits']) . '%' : '';
-                $lang_act = $action == 'thanks' ?  'GIVE' : 'REMOVE';
+        }
+        //give-receive counters
+        $sql = 'SELECT  (select count(user_id) FROM ' . THANKS_TABLE .  ' WHERE user_id=' . $user_id . ') give, ' .
+                    '  (select count(poster_id)     FROM  ' . THANKS_TABLE .  ' WHERE  poster_id = ' . $poster_id . ') rcv ';
+                $result = $this->db->sql_query($sql);
+        $row_giv_rcv = $this->db->sql_fetchrow($result);
+        $poster_give_count = $row_giv_rcv['give'];                    
+        $poster_receive_count = $row_giv_rcv['rcv'];                    
+        $this->db->sql_freeresult($result);
+        $l_poster_receive_count = ($poster_receive_count) ? $this->user->lang('THANKS', $poster_receive_count) : '';
+        $l_poster_give_count = ($poster_give_count) ? $this->user->lang('THANKS', $poster_give_count) : '';
+        $thanks_number = 0;
+        $thanks_list =  $this->get_thanks($post_id, $thanks_number);
+        $post_reput = ($thanks_number != 0) ? round($thanks_number / ($max_post_thanks / 100), $this->config['thanks_number_digits']) . '%' : '';
+        $lang_act = $action == 'thanks' ?  'GIVE' : 'REMOVE';
                 //if (isset($this->config ['thanks_notice_on']) ? $this->config ['thanks_notice_on'] : false)
                 //{
                 //    $this->gfksx_helper->send_thanks_pm($user_id, $poster_id, $send_pm = true, $post_id, $lang_act);
