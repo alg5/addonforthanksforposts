@@ -90,17 +90,29 @@ protected $thankers = array();
 		                { 
                             $thanks_time = time();
                             $this->user->data['user_id'];
- 
-                            //add to DB
-			                $sql = 'INSERT INTO ' . THANKS_TABLE . ' ' . $this->db->sql_build_array('INSERT', array(
+                            
+                            $thanks_data = array(
 				                'user_id'	=> $user_id,
 				                'post_id'	=> $post_id,
 				                'poster_id'	=> $poster_id,
 				                'topic_id'	=> $topic_id,
 				                'forum_id'	=> $forum_id,
 				                'thanks_time'	=> $thanks_time,
-			                ));
+			                );
+                            
+                            //add to DB
+			                $sql = 'INSERT INTO ' . THANKS_TABLE . ' ' . $this->db->sql_build_array('INSERT', $thanks_data);
 			                $this->db->sql_query($sql); 
+                            
+                            //notification
+				            $thanks_data = array_merge($thanks_data, array(
+					            'username'	=> $this->user->data['username'],
+					            'lang_act'	=> 'GIVE',
+					            'post_subject'	=> $this->get_post_subject($post_id),
+				            ));
+
+				            $this->gfksx_helper->add_notification($thanks_data);
+                            
 	                    }           
  	                    else
 		                {
@@ -327,7 +339,7 @@ protected $thankers = array();
             $poster_name_full = get_username_string('full', $poster_id, $row['username'], $row['user_colour']) ;
         }
     }
-    	private function get_key_by_post($post_id, $user_id)
+    private function get_key_by_post($post_id, $user_id)
 	{
 		$i = 0;
 		foreach((array)$this->thankers as $key => $value)
@@ -340,6 +352,14 @@ protected $thankers = array();
 		}
 		return $thanked;
 	}
+    private function get_post_subject($post_id)
+    {
+        $sql = 'SELECT post_subject FROM ' . POSTS_TABLE . ' WHERE post_id=' . $post_id;
+        $result = $this->db->sql_query($sql);
+        $post_subject =  $this->db->sql_fetchfield('post_subject');
+        $this->db->sql_freeresult($result);
+        return $post_subject;
+  }
 
 
     
