@@ -2,6 +2,8 @@
      $().ready(function() {
             $('a[class$="thanks-icon"]').on('click',  function (e) {
                 e.preventDefault();
+                //set all thanks button disabled
+                $('a[class$="thanks-icon"]').prop('disabled', true);
                 var action = '';
                 if ($(this).hasClass( "thanks-icon" ))
                     action = 'thanks';
@@ -28,6 +30,9 @@
         
         function togle_thanks(data)
         {
+            //set all thanks button enabled
+            $('a[class$="thanks-icon"]').prop('disabled', false);
+
              if (data['ERROR']) {
                 for (i = 0; i < data['ERROR'].length; i++) {
                     output_info_new(data['ERROR'][i], 'error');

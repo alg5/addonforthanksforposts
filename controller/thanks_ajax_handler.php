@@ -21,7 +21,7 @@ if (!defined('IN_PHPBB'))
 class thanks_ajax_handler
 {
 protected $thankers = array();
-   public function __construct(\phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\auth\auth $auth, \phpbb\template\template $template, \phpbb\user $user, \phpbb\cache\driver\driver_interface $cache, $phpbb_root_path, $php_ext, \phpbb\request\request_interface $request, $table_prefix, \gfksx\ThanksForPosts\core\helper $gfksx_helper)
+    public function __construct(\phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\auth\auth $auth, \phpbb\template\template $template, \phpbb\user $user, \phpbb\cache\driver\driver_interface $cache, $phpbb_root_path, $php_ext, \phpbb\request\request_interface $request, $table_prefix, \gfksx\ThanksForPosts\core\helper $gfksx_helper)
     {
 		$this->config = $config;
 		$this->db = $db;
@@ -45,37 +45,30 @@ protected $thankers = array();
             case 'thanks':
             case 'rthanks':
                 $this->thanks_for_post($action, $poster, $forum, $topic, $post);
-            break;
-                 case 'clear_thanks':
-					$this->clear_list_thanks($poster, $forum, $topic, $post);
-				break;                           
-           
+                break;
+            case 'clear_thanks':
+                $this->clear_list_thanks($poster, $forum, $topic, $post);
+                break;
             default:
                 $this->error[] = array('error' => $this->user->lang['INCORRECT_THANKS']);
         }
-        
+
         if (sizeof($this->error))
         {
             $return_error = array();
             foreach($this->error as $cur_error)
-			{
+            {
 				// replace lang vars if possible
 				$return_error['ERROR'][] = (isset($this->user->lang[$cur_error['error']])) ? $this->user->lang[$cur_error['error']] : $cur_error['error'];
 			}
-		
-        
-  		    $json_response = new \phpbb\json_response;
-		    $json_response->send($return_error);
+            $json_response = new \phpbb\json_response;
+            $json_response->send($return_error);
         }
         else
         {
- 		    $json_response = new \phpbb\json_response;
-		    $json_response->send($this->return);
+ 	        $json_response = new \phpbb\json_response;
+	        $json_response->send($this->return);
         }
-	
-
-
-
 	}
     
     private function thanks_for_post($action, $poster_id, $forum_id, $topic_id, $post_id)
@@ -173,11 +166,11 @@ protected $thankers = array();
                 $thanks_list =  $this->get_thanks($post_id, $thanks_number);
                 $post_reput = ($thanks_number != 0) ? round($thanks_number / ($max_post_thanks / 100), $this->config['thanks_number_digits']) . '%' : '';
                 $lang_act = $action == 'thanks' ?  'GIVE' : 'REMOVE';
-			    if (isset($this->config ['thanks_notice_on']) ? $this->config ['thanks_notice_on'] : false)
-			    {
-                    $this->gfksx_helper->send_thanks_pm($user_id, $poster_id, $send_pm = true, $post_id, $lang_act);
-                    $this->gfksx_helper->send_thanks_email($poster_id, $post_id, $lang_act);
-			    }	
+                //if (isset($this->config ['thanks_notice_on']) ? $this->config ['thanks_notice_on'] : false)
+                //{
+                //    $this->gfksx_helper->send_thanks_pm($user_id, $poster_id, $send_pm = true, $post_id, $lang_act);
+                //    $this->gfksx_helper->send_thanks_email($poster_id, $post_id, $lang_act);
+                //}	
                 $poster_name = '';
                 $poster_name_full =  '';
                 $this->get_poster_details($poster_id, $poster_name, $poster_name_full);
