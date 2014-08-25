@@ -48,7 +48,7 @@ class listener implements EventSubscriberInterface
         $this->user->add_lang_ext('gfksx/ThanksForPosts', 'thanks_mod');
         global $forum_id;
         $this->template->assign_vars(array(
-            'S_FORUM_THANKS'	=> (bool)($this->auth->acl_get('f_thanks', $forum_id)) ,
+            'S_FORUM_THANKS'	=> (bool) ($this->auth->acl_get('f_thanks', $forum_id)) ,
             ));
     }
 }
