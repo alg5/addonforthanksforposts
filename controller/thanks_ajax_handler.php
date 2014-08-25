@@ -170,13 +170,13 @@ protected $thankers = array();
 					'POSTER_ID'				=>  $poster_id,
 					'USER_ID'										   =>  $this->user->data['user_id'],
 					'CLASS_ICON'									=> $action == 'thanks' ? 'removethanks-icon' : 'thanks-icon',
-					'S_THANKS_POST_REPUT_VIEW'		=> isset($this->config['thanks_post_reput_view']) ? (bool)$this->config['thanks_post_reput_view'] : false,
+					'S_THANKS_POST_REPUT_VIEW'		=> isset($this->config['thanks_post_reput_view']) ? (bool) $this->config['thanks_post_reput_view'] : false,
 					'THANK_ALT'										=> ($action == 'thanks' ? $this->user->lang['REMOVE_THANKS'] :  $this->user->lang['THANK_POST']) . $poster_name,
 					'S_THANKS_REPUT_GRAPHIC' 			=> isset($this->config['thanks_reput_graphic']) ? (bool) $this->config['thanks_reput_graphic'] : false,
 					'THANKS_REPUT_GRAPHIC_WIDTH'	=> isset($this->config['thanks_reput_level']) ? (isset($this->config['thanks_reput_height']) ? sprintf('%dpx', $this->config['thanks_reput_level']*$this->config['thanks_reput_height']) : false) : false,
 					'THANKS_REPUT_HEIGHT'		=> isset($this->config['thanks_reput_height']) ? sprintf('%dpx', $this->config['thanks_reput_height']) : false,
 					'THANKS'					=> $thanks_list,
-					'THANKS_POSTLIST_VIEW'		=> isset($this->config['thanks_postlist_view']) ? (bool)$this->config['thanks_postlist_view'] : false,
+					'THANKS_POSTLIST_VIEW'		=> isset($this->config['thanks_postlist_view']) ? (bool) $this->config['thanks_postlist_view'] : false,
 					'S_MOD_THANKS'				=> $this->auth->acl_get('m_thanks') ? true :false,
 					'S_IS_BOT'				=> (!empty($this->user->data['is_bot'])) ? true : false,
 					'S_POST_ANONYMOUS'		=> ($poster_id == ANONYMOUS) ? true : false,
@@ -196,7 +196,7 @@ protected $thankers = array();
 	private function clear_list_thanks($poster_id, $forum_id, $topic_id, $post_id)
 	{
 		$sql = "DELETE FROM " . THANKS_TABLE . '
-		WHERE post_id = ' . (int)$post_id;
+		WHERE post_id = ' . (int) $post_id;
 		$result = $this->db->sql_query($sql);
 
 		if ($result == 0)
@@ -218,7 +218,7 @@ protected $thankers = array();
 		$poster_give_count = $row['give'];
 		$poster_receive_count = $row['rcv'];
 		$this->db->sql_freeresult($result);
-		
+
 		$message = $this->user->lang['CLEAR_LIST_THANKS_POST'];
 
 		$this->return = array(
