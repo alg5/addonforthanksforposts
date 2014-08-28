@@ -115,6 +115,21 @@ protected $thankers = array();
 					{
 						$this->error[] = array('error' => $this->user->lang['INCORRECT_THANKS']);
 					}
+					else
+					{
+						$thanks_data = array(
+							'user_id'	=> $user_id,
+							'post_id'	=> $post_id,
+							'poster_id'	=> $poster_id,
+							'topic_id'	=> $topic_id,
+							'forum_id'	=> $forum_id,
+							'thanks_time'	=> time(),
+							'username'	=> $this->user->data['username'],
+							'lang_act'	=> 'REMOVE',
+							'post_subject'	=> $this->get_post_subject($post_id),
+						);
+						$this->gfksx_helper->add_notification($thanks_data, 'thanks_remove');
+					}
 					break;
 				default:
 			}//end switch
@@ -325,7 +340,7 @@ protected $thankers = array();
 	private function get_post_subject($post_id)
 	{
 		$sql = 'SELECT post_subject FROM ' . POSTS_TABLE . ' WHERE post_id=' . $post_id;
-		$result = $this->db->sql_query($sql);
+		$result = $this->db->sql_query($sql, 3600);
 		$post_subject =  $this->db->sql_fetchfield('post_subject');
 		$this->db->sql_freeresult($result);
 		return $post_subject;
