@@ -14,9 +14,9 @@ namespace alg\AddonForThanksForPosts;
 */
 class ext extends \phpbb\extension\base
 {
-	public function is_enableable()
-	{
-		global $phpbb_extension_manager;
-		return $phpbb_extension_manager->is_enabled('gfksx/ThanksForPosts');
-	}
+    public function is_enableable()
+    {
+        global $phpbb_extension_manager;
+        return $phpbb_extension_manager->is_enabled('gfksx/ThanksForPosts');
+    }
 }

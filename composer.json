@@ -15,9 +15,10 @@
        
     ],
     "require": {
-        "php": ">=5.3.3"
+        "php": ">=5.3.3",
+        "gfksx/ThanksForPosts": "2.0.*"
     },
-	"require-dev": {
+		"require-dev": {
       "phpbb/epv": "dev-master"
    },
 	"extra": {
