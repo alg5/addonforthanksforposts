@@ -1,7 +1,7 @@
 {
     "name": "alg/AddonForThanksForPosts",
     "type": "phpbb-extension",
-    "description": "Добавляет  ajax-функциональность для возможности пользователям раздать/снять 'спасибо' без перезагрузки страницы, а модератором удалить список проголосовавших за пост",
+    "description": "Adds ajax functionality to main extension to update result of set/delete likes without reloading the page",
     "homepage": "http://www.chugunok.net",
     "version": "2.0.0",
     "time": "2014-07-10",
@@ -18,7 +18,7 @@
         "php": ">=5.3.3",
         "gfksx/ThanksForPosts": "2.0.*"
     },
-		"require-dev": {
+	"require-dev": {
       "phpbb/epv": "dev-master"
    },
 	"extra": {
