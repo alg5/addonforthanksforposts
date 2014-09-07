@@ -47,7 +47,7 @@
             //update reput list
             if (data.THANKS  && data.THANKS_POSTLIST_VIEW) 
             {
-                var updDiv ="<hr>";
+                var updDiv = "<div class='notice'>";
                 if  (!data.S_POST_ANONYMOUS && !data.S_IS_BOT && data.S_MOD_THANKS)
                 {
                     updDiv = updDiv + "<ul class='post-buttons' style='float:left'>";
@@ -56,7 +56,6 @@
 	                updDiv = updDiv + "</li>";
                     updDiv = updDiv + "</ul>";
                 }
-                updDiv = updDiv + "<div class='content'>";
                 if (!data.S_POST_ANONYMOUS && !data.S_IS_BOT)
                 {
                     updDiv = updDiv + "<dl class='postbody small'>";
@@ -77,7 +76,7 @@
             if (data.S_THANKS_POST_REPUT_VIEW && data.POST_REPUT && !data.S_POST_ANONYMOUS && !data.S_IS_BOT) 
             {
                 var updDiv = '';
-                updDiv = updDiv + "<div class='content'>";
+                updDiv = updDiv + "<div class='notice'>";
                 updDiv = updDiv + "<dl class='postbody'>";
                 updDiv = updDiv + "<dt class='small'><strong>" + L_REPUT + ":</strong>&nbsp;" + data.POST_REPUT + "</dt>";
                 updDiv = updDiv + "<dd>";
