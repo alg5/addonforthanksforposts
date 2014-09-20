@@ -131,7 +131,7 @@ protected $thankers = array();
 							'lang_act'	=> 'REMOVE',
 							'post_subject'	=> $this->get_post_subject($post_id),
 						);
-						$this->gfksx_helper->add_notification($thanks_data, 'thanks_remove');
+						$this->gfksx_helper->add_notification($thanks_data, 'gfksx.ThanksForPosts.notification.type.thanks_remove');
 					}
 					break;
 				default:
