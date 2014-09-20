@@ -50,7 +50,7 @@
                 var updDiv = "<div class='notice'>";
                 if  (!data.S_POST_ANONYMOUS && !data.S_IS_BOT && data.S_MOD_THANKS)
                 {
-                    updDiv = updDiv + "<ul class='post-buttons' style='float:left'>";
+                    updDiv = updDiv + "<ul class='post-buttons' style='float:left; position:static;'>";
                     updDiv = updDiv + "<li>";
                     updDiv = updDiv + "<a id='clear_list_thanks" +  data.POST_ID + "' href='#' title='" + L_CLEAR_LIST_THANKS + "' class='button icon-button delete-icon' style='float:left'><span>" + L_CLEAR_LIST_THANKS + "</span></a>";
 	                updDiv = updDiv + "</li>";
