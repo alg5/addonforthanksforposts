@@ -1,3 +1,6 @@
+imports:
+    - { resource: tables.yml }
+
 services:
     alg.AddonForThanksForPosts.listener:
         class: alg\AddonForThanksForPosts\event\listener
@@ -26,3 +29,6 @@ services:
             - @request
             - %core.table_prefix%
             - @gfksx.ThanksForPosts.helper
+            - %tables.thanks%
+            - %tables.users%
+            - %tables.posts%
