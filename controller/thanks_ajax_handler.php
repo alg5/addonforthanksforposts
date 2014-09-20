@@ -12,7 +12,7 @@ namespace alg\AddonForThanksForPosts\controller;
 class thanks_ajax_handler
 {
 protected $thankers = array();
-	public function __construct(\phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\auth\auth $auth, \phpbb\template\template $template, \phpbb\user $user, \phpbb\cache\driver\driver_interface $cache, $phpbb_root_path, $php_ext, \phpbb\request\request_interface $request, $table_prefix, \gfksx\ThanksForPosts\core\helper $gfksx_helper)
+	public function __construct(\phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\auth\auth $auth, \phpbb\template\template $template, \phpbb\user $user, \phpbb\cache\driver\driver_interface $cache, $phpbb_root_path, $php_ext, \phpbb\request\request_interface $request, $table_prefix, \gfksx\ThanksForPosts\core\helper $gfksx_helper, $thanks_table, $users_table, $posts_table)
 	{
 		$this->config = $config;
 		$this->db = $db;
@@ -26,6 +26,9 @@ protected $thankers = array();
 		$this->gfksx_helper = $gfksx_helper;
 		$this->return = array(); // save returned data in here
 		$this->error = array(); // save errors in here
+		$this->thanks_table = $thanks_table;
+		$this->users_table = $users_table;
+		$this->posts_table = $posts_table;
 	}
 
 	public function main($action, $poster, $forum, $topic, $post)
@@ -84,7 +87,7 @@ protected $thankers = array();
 							'thanks_time'	=> $thanks_time,
 							);
 						//add to DB
-						$sql = 'INSERT INTO ' . THANKS_TABLE . ' ' . $this->db->sql_build_array('INSERT', $thanks_data);
+						$sql = 'INSERT INTO ' . $this->thanks_table . ' ' . $this->db->sql_build_array('INSERT', $thanks_data);
 						$this->db->sql_query($sql);
 
 						//notification
@@ -107,7 +110,7 @@ protected $thankers = array();
 						$this->error[] = array('error' => $this->user->lang['DISABLE_REMOVE_THANKS']);
 						return;
 					}
-					$sql = "DELETE FROM " . THANKS_TABLE . '
+					$sql = "DELETE FROM " . $this->thanks_table . '
 								WHERE post_id ='.  $post_id ." AND user_id = " . (int) $user_id;
 					$this->db->sql_query($sql);
 					$result = $this->db->sql_affectedrows($sql);
@@ -140,7 +143,7 @@ protected $thankers = array();
 		if (isset($this->config['thanks_post_reput_view']) ? $this->config['thanks_post_reput_view'] : false)
 		{
 			$sql = 'SELECT MAX(tally) AS max_post_thanks
-				FROM (SELECT post_id, COUNT(*) AS tally FROM ' . THANKS_TABLE . ' GROUP BY post_id) t';
+				FROM (SELECT post_id, COUNT(*) AS tally FROM ' . $this->thanks_table . ' GROUP BY post_id) t';
 			$result = $this->db->sql_query($sql);
 			$max_post_thanks = (int) $this->db->sql_fetchfield('max_post_thanks');
 			$this->db->sql_freeresult($result);
@@ -150,8 +153,8 @@ protected $thankers = array();
 			$max_post_thanks = 1;
 		}
 		//give-receive counters
-		$sql = 'SELECT  (select count(user_id) FROM ' . THANKS_TABLE .  ' WHERE user_id=' . $user_id . ') give, ' .
-					'  (select count(poster_id)	 FROM  ' . THANKS_TABLE .  ' WHERE  poster_id = ' . $poster_id . ') rcv ';
+		$sql = 'SELECT  (select count(user_id) FROM ' . $this->thanks_table .  ' WHERE user_id=' . $user_id . ') give, ' .
+					'  (select count(poster_id)	 FROM  ' . $this->thanks_table .  ' WHERE  poster_id = ' . $poster_id . ') rcv ';
 				$result = $this->db->sql_query($sql);
 		$row_giv_rcv = $this->db->sql_fetchrow($result);
 		$poster_give_count = $row_giv_rcv['give'];
@@ -210,7 +213,7 @@ protected $thankers = array();
 
 	private function clear_list_thanks($poster_id, $forum_id, $topic_id, $post_id)
 	{
-		$sql = "DELETE FROM " . THANKS_TABLE . '
+		$sql = "DELETE FROM " . $this->thanks_table . '
 		WHERE post_id = ' . (int) $post_id;
 		$result = $this->db->sql_query($sql);
 
@@ -222,9 +225,9 @@ protected $thankers = array();
 
 		// get some output parameters
 		$sql = "SELECT poster_id, u.username" .
-					" , (select count(poster_id)  from " . THANKS_TABLE . " t where p.poster_id= t.poster_id ) as rcv " .
-					" , (select count(user_id) as give  from  " . THANKS_TABLE . "  t where user_id= " . $this->user->data['user_id'] . " ) as give " .
-					"  FROM  " . POSTS_TABLE .  " p JOIN " . USERS_TABLE . " u on p.poster_id = u.user_id " .
+					" , (select count(poster_id)  from " . $this->thanks_table . " t where p.poster_id= t.poster_id ) as rcv " .
+					" , (select count(user_id) as give  from  " . $this->thanks_table . "  t where user_id= " . $this->user->data['user_id'] . " ) as give " .
+					"  FROM  " . $this->posts_table .  " p JOIN " . $this->users_table . " u on p.poster_id = u.user_id " .
 					"  WHERE post_id=" . $post_id;
 		$result = $this->db->sql_query($sql);
 		$row = $this->db->sql_fetchrow($result);
@@ -255,7 +258,7 @@ protected $thankers = array();
 	// check if the user has already thanked that post
 	private function already_thanked($post_id, $user_id)
 	{
-		$sql = "SELECT count(*) as counter from " . THANKS_TABLE .
+		$sql = "SELECT count(*) as counter from " . $this->thanks_table .
 				" WHERE post_id = " . $post_id .
 				" AND user_id = " . $user_id ;
 		$result = $this->db->sql_query($sql);
@@ -277,7 +280,7 @@ protected $thankers = array();
 
 		// Go ahead and pull all data for this topic
 		$sql = 'SELECT u.user_id, u.username, u.username_clean, u.user_colour, t.thanks_time ' .
-				' FROM ' . THANKS_TABLE . ' t join ' . USERS_TABLE . ' u on t.user_id=u.user_id ' .
+				' FROM ' . $this->thanks_table . ' t join ' . $this->users_table . ' u on t.user_id=u.user_id ' .
 				' WHERE post_id = ' . $post_id .
 				' ORDER BY t.thanks_time DESC';
 
@@ -313,7 +316,7 @@ protected $thankers = array();
 
 	private function get_poster_details($poster_id, &$poster_name, &$poster_name_full)
 	{
-		$sql = 'SELECT username, user_colour FROM ' . USERS_TABLE .
+		$sql = 'SELECT username, user_colour FROM ' . $this->users_table .
 					' WHERE user_id = ' . $poster_id;
 		$result = $this->db->sql_query($sql);
 		$row = $this->db->sql_fetchrow($result);
@@ -339,7 +342,7 @@ protected $thankers = array();
 	}
 	private function get_post_subject($post_id)
 	{
-		$sql = 'SELECT post_subject FROM ' . POSTS_TABLE . ' WHERE post_id=' . $post_id;
+		$sql = 'SELECT post_subject FROM ' . $this->posts_table . ' WHERE post_id=' . $post_id;
 		$result = $this->db->sql_query($sql, 3600);
 		$post_subject =  $this->db->sql_fetchfield('post_subject');
 		$this->db->sql_freeresult($result);
