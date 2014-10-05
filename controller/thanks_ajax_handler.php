@@ -12,7 +12,7 @@ namespace alg\AddonForThanksForPosts\controller;
 class thanks_ajax_handler
 {
 protected $thankers = array();
-	public function __construct(\phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\auth\auth $auth, \phpbb\template\template $template, \phpbb\user $user, \phpbb\cache\driver\driver_interface $cache, $phpbb_root_path, $php_ext, \phpbb\request\request_interface $request, $table_prefix, \gfksx\ThanksForPosts\core\helper $gfksx_helper, $thanks_table, $users_table, $posts_table)
+	public function __construct(\phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\auth\auth $auth, \phpbb\template\template $template, \phpbb\user $user, \phpbb\cache\driver\driver_interface $cache, $phpbb_root_path, $php_ext, \phpbb\request\request_interface $request, $table_prefix, $thanks_table, $users_table, $posts_table, \gfksx\ThanksForPosts\core\helper $gfksx_helper = null)
 	{
 		$this->config = $config;
 		$this->db = $db;
@@ -33,18 +33,27 @@ protected $thankers = array();
 
 	public function main($action, $poster, $forum, $topic, $post)
 	{
-		$this->user->add_lang_ext('gfksx/ThanksForPosts', 'thanks_mod');		// Grab data
-		switch ($action)
+		// If the main extension is not installed, generate error
+		if (!is_null($this->gfksx_helper))
 		{
-			case 'thanks':
-			case 'rthanks':
-				$this->thanks_for_post($action, $poster, $forum, $topic, $post);
-				break;
-			case 'clear_thanks':
-				$this->clear_list_thanks($poster, $forum, $topic, $post);
-				break;
-			default:
-				$this->error[] = array('error' => $this->user->lang['INCORRECT_THANKS']);
+			$this->user->add_lang_ext('gfksx/ThanksForPosts', 'thanks_mod');
+			switch ($action)
+			{
+				case 'thanks':
+				case 'rthanks':
+					$this->thanks_for_post($action, $poster, $forum, $topic, $post);
+					break;
+				case 'clear_thanks':
+					$this->clear_list_thanks($poster, $forum, $topic, $post);
+					break;
+				default:
+					$this->error[] = array('error' => $this->user->lang['INCORRECT_THANKS']);
+			}
+		}
+		else
+		{
+			$this->user->add_lang_ext('alg/AddonForThanksForPosts', 'addon_tfp');
+			$this->error[] = array('error' => 'MAIN_EXT_NOT_INSTALLED');
 		}
 
 		if (sizeof($this->error))

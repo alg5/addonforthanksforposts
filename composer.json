@@ -3,8 +3,8 @@
     "type": "phpbb-extension",
     "description": "Adds ajax functionality to main extension to update result of set/delete likes without reloading the page",
     "homepage": "http://www.chugunok.net",
-    "version": "2.0.0",
-    "time": "2014-07-10",
+    "version": "2.0.1",
+    "time": "2014-10-05",
     "license": "GPL-2.0",
     "authors": [
         {
