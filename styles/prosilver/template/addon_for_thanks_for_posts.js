@@ -177,7 +177,7 @@
                     }
                     else 
                     {
-                         var rcv ="<b>" + L_RECEIVED + ":</b> <a href='" + data.POSTER_RECEIVE_COUNT_LINK + "'>" + data.POSTER_RECEIVE_COUNT + "</a>";
+                         var rcv = L_RECEIVED + ": <a href='" + data.POSTER_RECEIVE_COUNT_LINK + "'>" + data.POSTER_RECEIVE_COUNT + "</a>";
                         $(this).html(rcv);
 
                     }
@@ -191,7 +191,7 @@
                     }
                     else 
                     {
-                        var give ="<b>" + L_GIVEN + ":</b> <a href='" + data.POSTER_GIVE_COUNT_LINK + "'>" + data.POSTER_GIVE_COUNT + "</a>";
+                        var give ="<b>" + L_GIVEN + ":<a href='" + data.POSTER_GIVE_COUNT_LINK + "'>" + data.POSTER_GIVE_COUNT + "</a>";
 
                         $(this).html(give);
                     }
