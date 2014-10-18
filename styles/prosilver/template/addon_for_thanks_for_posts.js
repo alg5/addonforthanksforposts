@@ -169,34 +169,31 @@
     {
         if (!data.S_POST_ANONYMOUS && data.THANKS_COUNTERS_VIEW) 
             {
-                $("span[id='" + "poster_receive" + data['POSTER_ID'] + "']").each(function () {
+                $("dd[data-user-receive-id= " + data['POSTER_ID'] + "]").each(function () {
                     var rcv = '';
                     if (data.POSTER_RECEIVE_COUNT == 0) 
                     {
-                        //$(this).parent().remove();
-                        $(this).hide();
+                          $(this).html('');
                     }
                     else 
                     {
-                         var rcv ="<dd><strong>" + L_RECEIVED + ":</strong> <a href='" + data.POSTER_RECEIVE_COUNT_LINK + "'>" + data.POSTER_RECEIVE_COUNT + "</a></dd>";
+                         var rcv ="<dd><b>" + L_RECEIVED + ":</b> <a href='" + data.POSTER_RECEIVE_COUNT_LINK + "'>" + data.POSTER_RECEIVE_COUNT + "</a></dd>";
                         $(this).html(rcv);
-                        $(this).show();
 
                     }
                 });
 
-                $("span[id='" + "user_give" + data['USER_ID'] + "']").each(function () {
+                $("dd[data-user-give-id= " + data['USER_ID'] + "]").each(function () {
                     var give = '';
                     if (data.POSTER_GIVE_COUNT == 0) 
                     {
-                        $(this).hide();
+                       $(this).html('');
                     }
                     else 
                     {
-                        var give ="<dd><strong>" + L_GIVEN + ":</strong> <a href='" + data.POSTER_GIVE_COUNT_LINK + "'>" + data.POSTER_GIVE_COUNT + "</a></dd>";
+                        var give ="<dd><b>" + L_GIVEN + ":</b> <a href='" + data.POSTER_GIVE_COUNT_LINK + "'>" + data.POSTER_GIVE_COUNT + "</a></dd>";
 
                         $(this).html(give);
-                        $(this).show();
                     }
  
 
