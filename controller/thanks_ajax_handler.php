@@ -162,20 +162,20 @@ protected $thankers = array();
 			$max_post_thanks = 1;
 		}
 		//give-receive counters
-        $ex_fid_ary = array_keys($this->auth->acl_getf('!f_read', true));
+		$ex_fid_ary = array_keys($this->auth->acl_getf('!f_read', true));
 
 		$sql = 'SELECT  (select count(user_id) FROM ' . $this->thanks_table .  ' WHERE user_id=' . $user_id ;
 		if (sizeof($ex_fid_ary))
 		{
 			$sql .= " AND " . $this->db->sql_in_set('forum_id', $ex_fid_ary, true);
 		}
-        
-        $sql .=  ') give,  (select count(poster_id)	 FROM  ' . $this->thanks_table .  ' WHERE  poster_id = ' . $poster_id;
+
+		$sql .=  ') give,  (select count(poster_id)	 FROM  ' . $this->thanks_table .  ' WHERE  poster_id = ' . $poster_id;
  		if (sizeof($ex_fid_ary))
 		{
 			$sql .= " AND " . $this->db->sql_in_set('forum_id', $ex_fid_ary, true);
 		}
-        $sql .= ') rcv ';
+		$sql .= ') rcv ';
 		$result = $this->db->sql_query($sql);
 		$row_giv_rcv = $this->db->sql_fetchrow($result);
 		$poster_give_count = $row_giv_rcv['give'];
