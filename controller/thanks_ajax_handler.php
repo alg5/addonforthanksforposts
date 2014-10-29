@@ -162,9 +162,21 @@ protected $thankers = array();
 			$max_post_thanks = 1;
 		}
 		//give-receive counters
-		$sql = 'SELECT  (select count(user_id) FROM ' . $this->thanks_table .  ' WHERE user_id=' . $user_id . ') give, ' .
-					'  (select count(poster_id)	 FROM  ' . $this->thanks_table .  ' WHERE  poster_id = ' . $poster_id . ') rcv ';
-				$result = $this->db->sql_query($sql);
+        $ex_fid_ary = array_keys($this->auth->acl_getf('!f_read', true));
+
+		$sql = 'SELECT  (select count(user_id) FROM ' . $this->thanks_table .  ' WHERE user_id=' . $user_id ;
+		if (sizeof($ex_fid_ary))
+		{
+			$sql .= " AND " . $this->db->sql_in_set('forum_id', $ex_fid_ary, true);
+		}
+        
+        $sql .=  ') give,  (select count(poster_id)	 FROM  ' . $this->thanks_table .  ' WHERE  poster_id = ' . $poster_id;
+ 		if (sizeof($ex_fid_ary))
+		{
+			$sql .= " AND " . $this->db->sql_in_set('forum_id', $ex_fid_ary, true);
+		}
+        $sql .= ') rcv ';
+		$result = $this->db->sql_query($sql);
 		$row_giv_rcv = $this->db->sql_fetchrow($result);
 		$poster_give_count = $row_giv_rcv['give'];
 		$poster_receive_count = $row_giv_rcv['rcv'];
@@ -175,49 +187,44 @@ protected $thankers = array();
 		$thanks_list =  $this->get_thanks($post_id, $thanks_number);
 		$post_reput = ($thanks_number != 0) ? round($thanks_number / ($max_post_thanks / 100), $this->config['thanks_number_digits']) . '%' : '';
 		$lang_act = $action == 'thanks' ?  'GIVE' : 'REMOVE';
-				//if (isset($this->config ['thanks_notice_on']) ? $this->config ['thanks_notice_on'] : false)
-				//{
-				//	$this->gfksx_helper->send_thanks_pm($user_id, $poster_id, $send_pm = true, $post_id, $lang_act);
-				//	$this->gfksx_helper->send_thanks_email($poster_id, $post_id, $lang_act);
-				//}
-				$poster_name = '';
-				$poster_name_full =  '';
-				$this->get_poster_details($poster_id, $poster_name, $poster_name_full);
-				$action_togle = $action == 'thanks' ? 'rthanks' : 'thanks' ;
-				$path = './app.php/thanks_for_posts/' . $action_togle . '/' . $poster_id . '/' . $forum_id . '/' . $topic_id . '/' . $post_id . '?to_id=' . $poster_id;
-				$thank_alt = ($action == 'thanks' ? $this->user->lang['REMOVE_THANKS'] :  $this->user->lang['THANK_POST']) . $poster_name_full;
-				$class_icon = $action == 'thanks' ? 'removethanks-icon' : 'thanks-icon';
-				$thank_img = "<a  href='" .  $path . "'   data-ajax='togle_thanks' title='" . $thank_alt . "' class='button icon-button " .  $class_icon . "'><span>&nbsp;</span></a>";
-				$message = $this->user->lang['THANKS_INFO_' . $lang_act];
+		$poster_name = '';
+		$poster_name_full =  '';
+		$this->get_poster_details($poster_id, $poster_name, $poster_name_full);
+		$action_togle = $action == 'thanks' ? 'rthanks' : 'thanks' ;
+		$path = './app.php/thanks_for_posts/' . $action_togle . '/' . $poster_id . '/' . $forum_id . '/' . $topic_id . '/' . $post_id . '?to_id=' . $poster_id;
+		$thank_alt = ($action == 'thanks' ? $this->user->lang['REMOVE_THANKS'] :  $this->user->lang['THANK_POST']) . $poster_name_full;
+		$class_icon = $action == 'thanks' ? 'removethanks-icon' : 'thanks-icon';
+		$thank_img = "<a  href='" .  $path . "'   data-ajax='togle_thanks' title='" . $thank_alt . "' class='button icon-button " .  $class_icon . "'><span>&nbsp;</span></a>";
+		$message = $this->user->lang['THANKS_INFO_' . $lang_act];
 
-				$this->return = array(
-					'SUCCESS'			=>  $message,
-					'POST_REPUT'		=>  $post_reput,
-					'POST_ID'				=>  $post_id,
-					'POSTER_ID'				=>  $poster_id,
-					'USER_ID'										   =>  $this->user->data['user_id'],
-					'CLASS_ICON'									=> $action == 'thanks' ? 'removethanks-icon' : 'thanks-icon',
-					'S_THANKS_POST_REPUT_VIEW'		=> isset($this->config['thanks_post_reput_view']) ? (bool) $this->config['thanks_post_reput_view'] : false,
-					'THANK_ALT'										=> ($action == 'thanks' ? $this->user->lang['REMOVE_THANKS'] :  $this->user->lang['THANK_POST']) . $poster_name,
-					'S_THANKS_REPUT_GRAPHIC' 			=> isset($this->config['thanks_reput_graphic']) ? (bool) $this->config['thanks_reput_graphic'] : false,
-					'THANKS_REPUT_GRAPHIC_WIDTH'	=> isset($this->config['thanks_reput_level']) ? (isset($this->config['thanks_reput_height']) ? sprintf('%dpx', $this->config['thanks_reput_level']*$this->config['thanks_reput_height']) : false) : false,
-					'THANKS_REPUT_HEIGHT'		=> isset($this->config['thanks_reput_height']) ? sprintf('%dpx', $this->config['thanks_reput_height']) : false,
-					'THANKS'					=> $thanks_list,
-					'THANKS_POSTLIST_VIEW'		=> isset($this->config['thanks_postlist_view']) ? (bool) $this->config['thanks_postlist_view'] : false,
-					'S_MOD_THANKS'				=> $this->auth->acl_get('m_thanks') ? true :false,
-					'S_IS_BOT'				=> (!empty($this->user->data['is_bot'])) ? true : false,
-					'S_POST_ANONYMOUS'		=> ($poster_id == ANONYMOUS) ? true : false,
-					'THANK_TEXT'				=> $this->user->lang['THANK_TEXT_1'],
-					'THANK_TEXT_2'				=> ($thanks_number != 1) ? sprintf($this->user->lang['THANK_TEXT_2PL'], $thanks_number) : $this->user->lang['THANK_TEXT_2'],
-					'POST_AUTHOR_FULL'			=>$poster_name_full,
-					'THANKS_COUNTERS_VIEW'		=> isset($this->config['thanks_counters_view']) ? $this->config['thanks_counters_view'] : false,
-					'POSTER_RECEIVE_COUNT'			=> $l_poster_receive_count,
-					'POSTER_RECEIVE_COUNT_LINK'	=> './app.php/thankslist/givens/' . $poster_id . '/false',
-					'POSTER_GIVE_COUNT'				=> $l_poster_give_count,
-					'POSTER_GIVE_COUNT_LINK'	=> './app.php/thankslist/givens/' . $poster_id . '/true',
-					'THANK_IMG'					=> $thank_img,
-					'THANK_PATH'				=> $path,
-				);
+		$this->return = array(
+			'SUCCESS'			=>  $message,
+			'POST_REPUT'		=>  $post_reput,
+			'POST_ID'				=>  $post_id,
+			'POSTER_ID'				=>  $poster_id,
+			'USER_ID'										   =>  $this->user->data['user_id'],
+			'CLASS_ICON'									=> $action == 'thanks' ? 'removethanks-icon' : 'thanks-icon',
+			'S_THANKS_POST_REPUT_VIEW'		=> isset($this->config['thanks_post_reput_view']) ? (bool) $this->config['thanks_post_reput_view'] : false,
+			'THANK_ALT'										=> ($action == 'thanks' ? $this->user->lang['REMOVE_THANKS'] :  $this->user->lang['THANK_POST']) . $poster_name,
+			'S_THANKS_REPUT_GRAPHIC' 			=> isset($this->config['thanks_reput_graphic']) ? (bool) $this->config['thanks_reput_graphic'] : false,
+			'THANKS_REPUT_GRAPHIC_WIDTH'	=> isset($this->config['thanks_reput_level']) ? (isset($this->config['thanks_reput_height']) ? sprintf('%dpx', $this->config['thanks_reput_level']*$this->config['thanks_reput_height']) : false) : false,
+			'THANKS_REPUT_HEIGHT'		=> isset($this->config['thanks_reput_height']) ? sprintf('%dpx', $this->config['thanks_reput_height']) : false,
+			'THANKS'					=> $thanks_list,
+			'THANKS_POSTLIST_VIEW'		=> isset($this->config['thanks_postlist_view']) ? (bool) $this->config['thanks_postlist_view'] : false,
+			'S_MOD_THANKS'				=> $this->auth->acl_get('m_thanks') ? true :false,
+			'S_IS_BOT'				=> (!empty($this->user->data['is_bot'])) ? true : false,
+			'S_POST_ANONYMOUS'		=> ($poster_id == ANONYMOUS) ? true : false,
+			'THANK_TEXT'				=> $this->user->lang['THANK_TEXT_1'],
+			'THANK_TEXT_2'				=> ($thanks_number != 1) ? sprintf($this->user->lang['THANK_TEXT_2PL'], $thanks_number) : $this->user->lang['THANK_TEXT_2'],
+			'POST_AUTHOR_FULL'			=>$poster_name_full,
+			'THANKS_COUNTERS_VIEW'		=> isset($this->config['thanks_counters_view']) ? $this->config['thanks_counters_view'] : false,
+			'POSTER_RECEIVE_COUNT'			=> $l_poster_receive_count,
+			'POSTER_RECEIVE_COUNT_LINK'	=> './app.php/thankslist/givens/' . $poster_id . '/false',
+			'POSTER_GIVE_COUNT'				=> $l_poster_give_count,
+			'POSTER_GIVE_COUNT_LINK'	=> './app.php/thankslist/givens/' . $poster_id . '/true',
+			'THANK_IMG'					=> $thank_img,
+			'THANK_PATH'				=> $path,
+		);
 	}
 
 	private function clear_list_thanks($poster_id, $forum_id, $topic_id, $post_id)
