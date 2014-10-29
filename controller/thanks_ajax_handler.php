@@ -171,7 +171,7 @@ protected $thankers = array();
 		}
 
 		$sql .=  ') give,  (select count(poster_id)	 FROM  ' . $this->thanks_table .  ' WHERE  poster_id = ' . $poster_id;
- 		if (sizeof($ex_fid_ary))
+		if (sizeof($ex_fid_ary))
 		{
 			$sql .= " AND " . $this->db->sql_in_set('forum_id', $ex_fid_ary, true);
 		}
