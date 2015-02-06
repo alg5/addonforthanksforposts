@@ -36,7 +36,7 @@ class v_2_0_0 extends \phpbb\db\migration\migration
 		return array(
 			// Add configs
 			// Current version
-			array('config.add', array('AddonForThanksForPosts', '2.0.2')),
+			array('config.add', array('AddonForThanksForPosts', '2.0.3')),
 		);
 	}
 }

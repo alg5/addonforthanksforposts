@@ -12,7 +12,7 @@ namespace alg\AddonForThanksForPosts\controller;
 class thanks_ajax_handler
 {
 protected $thankers = array();
-	public function __construct(\phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\auth\auth $auth, \phpbb\template\template $template, \phpbb\user $user, \phpbb\cache\driver\driver_interface $cache, $phpbb_root_path, $php_ext, \phpbb\request\request_interface $request, $table_prefix, $thanks_table, $users_table, $posts_table, \gfksx\ThanksForPosts\core\helper $gfksx_helper = null)
+	public function __construct(\phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\auth\auth $auth, \phpbb\template\template $template, \phpbb\user $user, \phpbb\cache\driver\driver_interface $cache, $phpbb_root_path, $php_ext, \phpbb\request\request_interface $request, $table_prefix, $thanks_table, $users_table, $posts_table,  \phpbb\controller\helper $controller_helper, \gfksx\ThanksForPosts\core\helper $gfksx_helper = null)
 	{
 		$this->config = $config;
 		$this->db = $db;
@@ -29,14 +29,23 @@ protected $thankers = array();
 		$this->thanks_table = $thanks_table;
 		$this->users_table = $users_table;
 		$this->posts_table = $posts_table;
+        $this->controller_helper = $controller_helper;
 	}
 
 	public function main($action, $poster, $forum, $topic, $post)
 	{
+		$this->user->add_lang_ext('gfksx/ThanksForPosts', 'thanks_mod');
+        //not allowed like for anonymous
+        if ($this->user->data['is_bot'] || $this->user->data['user_id'] == ANONYMOUS  )
+        {
+            $return_error['ERROR'][] = $this->user->lang['LOGIN_REQUIRED'];
+			$json_response = new \phpbb\json_response;
+			$json_response->send($return_error);
+        }
+       
 		// If the main extension is not installed, generate error
 		if (!is_null($this->gfksx_helper))
 		{
-			$this->user->add_lang_ext('gfksx/ThanksForPosts', 'thanks_mod');
 			switch ($action)
 			{
 				case 'thanks':
@@ -224,6 +233,7 @@ protected $thankers = array();
 			'POSTER_GIVE_COUNT_LINK'	=> './app.php/thankslist/givens/' . $poster_id . '/true',
 			'THANK_IMG'					=> $thank_img,
 			'THANK_PATH'				=> $path,
+            'IS_ALLOW_REMOVE_THANKS'	=> isset($this->config['remove_thanks']) ? (bool) $this->config['remove_thanks'] : true,
 		);
 	}
 

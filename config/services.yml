@@ -18,4 +18,5 @@ services:
             - %tables.thanks%
             - %tables.users%
             - %tables.posts%
+            - @controller.helper
             - @?gfksx.ThanksForPosts.helper

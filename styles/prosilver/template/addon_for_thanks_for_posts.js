@@ -42,8 +42,10 @@
             output_info_new( data['SUCCESS'], 'warning');
             
            //update icon and tooltip
-            $("#lnk_thanks_post" + data.POST_ID).removeClass().addClass('button icon-button ' + data.CLASS_ICON).attr('title', data.THANK_ALT).attr('href', data.THANK_PATH);
-
+           if (data.IS_ALLOW_REMOVE_THANKS)
+                $("#lnk_thanks_post" + data.POST_ID).removeClass().addClass('button icon-button ' + data.CLASS_ICON).attr('title', data.THANK_ALT).attr('href', data.THANK_PATH);
+            else
+                $("#lnk_thanks_post" + data.POST_ID).parent().hide();
             //update reput list
             if (data.THANKS  && data.THANKS_POSTLIST_VIEW) 
             {
