@@ -2,8 +2,8 @@
     function add_ajax_thanks(e, elements) {
         elements.find('a[class$="thanks-icon"]').on('click', function (e) {
             e.preventDefault();
-            //set all thanks button disabled
-            $('a[class$="thanks-icon"]').prop('disabled', true);
+            //set all thanks button invisible
+            $('a[class$="thanks-icon"]').hide();
             var action = '';
             if ($(this).hasClass("thanks-icon"))
                 action = 'thanks';
@@ -77,8 +77,8 @@
     $('#qr_posts').on('qr_loaded', add_ajax_thanks);
 
     function togle_thanks(data) {
-        //set all thanks button enabled
-        $('a[class$="thanks-icon"]').prop('disabled', false);
+        //set all thanks button visible
+        $('a[class$="thanks-icon"]').show();
 
         if (data['ERROR']) {
             for (i = 0; i < data['ERROR'].length; i++) {
@@ -211,4 +211,4 @@
             return results[1] || 0;
         }
     }
-})(jQuery, document);  // Avoid conflicts with other libraries
+})(jQuery, document);     // Avoid conflicts with other libraries

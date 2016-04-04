@@ -2,9 +2,9 @@
     "name": "alg/AddonForThanksForPosts",
     "type": "phpbb-extension",
     "description": "Adds ajax functionality to main extension to update result of set/delete likes without reloading the page",
-    "homepage": "http://www.chugunok.net",
-    "version": "2.0.4",
-    "time": "2015-02-06",
+    "homepage": "https://github.com/alg5/AddonForThanksForPosts",
+    "version": "2.0.5",
+    "time": "2016-04-04",
     "license": "GPL-2.0",
     "authors": [
         {
