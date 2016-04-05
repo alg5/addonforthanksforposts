@@ -1,9 +1,14 @@
 ﻿(function ($, document) { // Avoid conflicts with other libraries
     function add_ajax_thanks(e, elements) {
-        elements.find('a[class$="thanks-icon"]').on('click', function (e) {
+        var btnsLike = elements.find('i.icon').filter(function (index) {
+            return $(this).is('[class*="thanks-icon"]');
+        });
+
+        $(btnsLike).on('click', function (e) {
             e.preventDefault();
+            
             //set all thanks button invisible
-            $('a[class$="thanks-icon"]').hide();
+            $(btnsLike).hide();
             var action = '';
             if ($(this).hasClass("thanks-icon"))
                 action = 'thanks';
@@ -78,7 +83,11 @@
 
     function togle_thanks(data) {
         //set all thanks button visible
-        $('a[class$="thanks-icon"]').show();
+        var btnsLike = $('i.icon').filter(function (index) {
+            return $(this).is('[class*="thanks-icon"]');
+        });
+
+        $(btnsLike).show();
 
         if (data['ERROR']) {
             for (i = 0; i < data['ERROR'].length; i++) {
@@ -90,7 +99,10 @@
 
         //update icon and tooltip
         if (data.IS_ALLOW_REMOVE_THANKS)
-            $("#lnk_thanks_post" + data.POST_ID).removeClass().addClass('button icon-button ' + data.CLASS_ICON).attr('title', data.THANK_ALT).attr('href', data.THANK_PATH);
+        {
+            $("#lnk_thanks_post" + data.POST_ID).attr('title', data.THANK_ALT).attr('href', data.THANK_PATH);
+            $("#lnk_thanks_post" + data.POST_ID).find('i').removeClass("thanks-icon").removeClass("removethanks-icon").addClass( data.CLASS_ICON);
+        }
         else
             $("#lnk_thanks_post" + data.POST_ID).parent().hide();
         //update reput list
@@ -211,4 +223,4 @@
             return results[1] || 0;
         }
     }
-})(jQuery, document);     // Avoid conflicts with other libraries
+})(jQuery, document);         // Avoid conflicts with other libraries
