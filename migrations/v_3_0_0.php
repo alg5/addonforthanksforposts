@@ -13,7 +13,7 @@ class v_3_0_0 extends \phpbb\db\migration\migration
 {
 	public function effectively_installed()
 	{
-		return isset($this->config['AddonForThanksForPosts_3_2']) && version_compare($this->config['AddonForThanksForPosts_3_2'], '3.0.*', '>=');
+		return isset($this->config['AddonForThanksForPosts']) && version_compare($this->config['AddonForThanksForPosts'], '3.0.*', '>=');
 	}
 
 	static public function depends_on()
@@ -39,7 +39,7 @@ class v_3_0_0 extends \phpbb\db\migration\migration
 	{
 		return array(
 			// Current version
-			array('config.update', array('AddonForThanksForPosts_3_2', '3.0.0')),
+			array('config.update', array('AddonForThanksForPosts', '3.0.0')),
 		);
 	}
 }
