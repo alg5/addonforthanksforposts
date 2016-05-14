@@ -1,5 +1,3 @@
-sudo: required
-
 language: php
 
 matrix:
@@ -27,7 +25,6 @@ matrix:
   allow_failures:
     - php: hhvm
   fast_finish: true
-
 
 env:
   global:
