@@ -1,10 +1,10 @@
 <?php
 /**
- *
- * @package AddonForThanksForPosts
- * @copyright (c) 2014 alg 
- * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
- *
+*
+* @package AddonForThanksForPosts
+* @copyright (c) 2014 alg
+* @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
+*
  */
 
 namespace alg\AddonForThanksForPosts\event;

@@ -68,7 +68,7 @@ protected $thankers = array();
 		if (sizeof($this->error))
 		{
 			$return_error = array();
-			foreach($this->error as $cur_error)
+			foreach ($this->error as $cur_error)
 			{
 					// replace lang vars if possible
 					$return_error['ERROR'][] = (isset($this->user->lang[$cur_error['error']])) ? $this->user->lang[$cur_error['error']] : $cur_error['error'];
@@ -356,7 +356,7 @@ protected $thankers = array();
 	private function get_key_by_post($post_id, $user_id)
 	{
 		$i = 0;
-		foreach((array) $this->thankers as $key => $value)
+		foreach ((array) $this->thankers as $key => $value)
 		{
 			if ($this->thankers[$key]['post_id'] == $post_id && $this->thankers[$key]['user_id'] == $user_id)
 			{
