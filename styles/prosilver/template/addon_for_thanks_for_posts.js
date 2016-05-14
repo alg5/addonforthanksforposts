@@ -20,7 +20,7 @@
             }
             var url = $('#lnk_thanks_post' + post_id).attr('href');
             var poster_id = $.urlParam('to_id', url);
-            var path = './app.php/AddonForThanksForPosts/' + action + '/' + poster_id + '/' + forum_id + '/' + topic_id + '/' + post_id;
+            var path = U_ADDONFORTHANKSFORPOSTS_PATH + action + '/' + poster_id + '/' + forum_id + '/' + topic_id + '/' + post_id;
             $.ajax({
                 type: 'POST',
                 dataType: 'json',
@@ -50,7 +50,7 @@
                 theme: 'defaultTheme',
                 buttons: [{
                     addClass: 'btn btn-primary', text: L_YES, onClick: function ($noty) {
-                        var path = './app.php/AddonForThanksForPosts/clear_thanks/' + poster_id + '/' + $("input[name='forum_id']").val() + '/' + $("input[name='topic_id']").val() + '/' + post_id;
+                        var path = U_ADDONFORTHANKSFORPOSTS_PATH + 'clear_thanks/' + poster_id + '/' + $("input[name='forum_id']").val() + '/' + $("input[name='topic_id']").val() + '/' + post_id;
                         $.ajax({
                             type: 'POST',
                             dataType: 'json',
@@ -115,7 +115,15 @@
         else {
             $('#list_thanks' + data.POST_ID).html('');
         }
-
+        if (!data.S_POST_ANONYMOUS && !data.S_IS_BOT) {
+            var updDiv = "<div class='notice'>";
+            updDiv = updDiv + "<dl >";
+            updDiv = updDiv + "<dt>" + data.THANKS + "</dt>";
+            updDiv = updDiv + "</dl >";
+            updDiv = updDiv + "</div >";
+            $('#list_thanks' + data.POST_ID).html(updDiv);
+        }
+        //        ******************
         //update reput graphic
         if (data.S_THANKS_POST_REPUT_VIEW && data.POST_REPUT && !data.S_POST_ANONYMOUS && !data.S_IS_BOT) {
             var updDiv = '';
@@ -211,4 +219,4 @@
             return results[1] || 0;
         }
     }
-})(jQuery, document);     // Avoid conflicts with other libraries
+})(jQuery, document);       // Avoid conflicts with other libraries
