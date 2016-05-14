@@ -25,7 +25,7 @@
             }
             var url = $('#lnk_thanks_post' + post_id).attr('href');
             var poster_id = $.urlParam('to_id', url);
-            var path = './app.php/AddonForThanksForPosts/' + action + '/' + poster_id + '/' + forum_id + '/' + topic_id + '/' + post_id;
+            var path = U_ADDONFORTHANKSFORPOSTS_PATH + action + '/' + poster_id + '/' + forum_id + '/' + topic_id + '/' + post_id;
             $.ajax({
                 type: 'POST',
                 dataType: 'json',
@@ -55,7 +55,7 @@
                 theme: 'defaultTheme',
                 buttons: [{
                     addClass: 'btn btn-primary', text: L_YES, onClick: function ($noty) {
-                        var path = './app.php/AddonForThanksForPosts/clear_thanks/' + poster_id + '/' + $("input[name='forum_id']").val() + '/' + $("input[name='topic_id']").val() + '/' + post_id;
+                        var path = U_ADDONFORTHANKSFORPOSTS_PATH + 'clear_thanks/' + poster_id + '/' + $("input[name='forum_id']").val() + '/' + $("input[name='topic_id']").val() + '/' + post_id;
                         $.ajax({
                             type: 'POST',
                             dataType: 'json',
@@ -108,21 +108,24 @@
         //update reput list
         if (data.THANKS && data.THANKS_POSTLIST_VIEW) {
             var updDiv = "<div class='notice'>";
+            updDiv = updDiv + "<dl>";
             if (!data.S_POST_ANONYMOUS && !data.S_IS_BOT && data.S_MOD_THANKS) {
                 updDiv = updDiv + "<ul class='post-buttons' style='float:left; position:static;'>";
                 updDiv = updDiv + "<li>";
-                updDiv = updDiv + "<a id='clear_list_thanks" + data.POST_ID + "' href='#' title='" + L_CLEAR_LIST_THANKS + "' class='button icon-button delete-icon' style='float:left'><span>" + L_CLEAR_LIST_THANKS + "</span></a>";
+                updDiv = updDiv + "<a id='clear_list_thanks" + data.POST_ID + "' href='#' title='" + L_CLEAR_LIST_THANKS + "' class='button button-icon-only' style='float:left;'>"
+                updDiv = updDiv + "<i class='icon fa-times fa-fw' aria-hidden='true'></i><span class='sr-only'>" + L_CLEAR_LIST_THANKS + "</span>";
+                 updDiv = updDiv + "</a>";
                 updDiv = updDiv + "</li>";
                 updDiv = updDiv + "</ul>";
             }
             if (!data.S_POST_ANONYMOUS && !data.S_IS_BOT) {
-                updDiv = updDiv + "<dl class='postbody small'>";
                 updDiv = updDiv + "<dt>" + data.THANK_TEXT + data.POST_AUTHOR_FULL + data.THANK_TEXT_2 + "</dt>";
                 updDiv = updDiv + "<dd>" + data.THANKS + "</dd>";
-                updDiv = updDiv + "</dl >";
             }
+            updDiv = updDiv + "</dl >";
             updDiv = updDiv + "</div >";
-            $('#list_thanks' + data.POST_ID).html(updDiv);
+
+             $('#list_thanks' + data.POST_ID).html(updDiv);
         }
         else {
             $('#list_thanks' + data.POST_ID).html('');
