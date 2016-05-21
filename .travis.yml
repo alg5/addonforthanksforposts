@@ -40,7 +40,6 @@ branches:
   only:
     - master
     - dev_3_2.x
-    - /^dev_3_2.x-.*$/
 
 before_install:
   - sudo mkdir travis
