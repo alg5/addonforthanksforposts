@@ -270,8 +270,9 @@ protected $thankers = array();
 		$this->return = array(
 			'SUCCESS'		=> $message,
 				'POST_ID'				=> $post_id,
-				'POSTER_ID'				=> $poster_id,
+				'POSTER_ID'			=> $poster_id,
 				'USER_ID'				=> $this->user->data['user_id'],
+			    'CLASS_ICON'		=> 'thanks-icon',
 				'THANK_ALT'		=> $this->user->lang['THANK_POST'] . $poster_name,
 				'THANK_PATH'	=> './thanks_for_posts/thanks/' . $poster_id . '/' . $forum_id . '/' . $topic_id . '/' . $post_id . '?to_id=' . $poster_id,
 				'S_POST_ANONYMOUS'			=> ($poster_id == ANONYMOUS) ? true : false,

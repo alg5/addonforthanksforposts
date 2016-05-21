@@ -165,7 +165,9 @@
         $('#list_thanks' + data['POST_ID']).html('');
 
         //update thanks img
-        $("#lnk_thanks_post" + data.POST_ID).removeClass().addClass('button icon-button thanks-icon').attr('title', data.THANK_ALT).attr('href', data.THANK_PATH);
+        //$("#lnk_thanks_post" + data.POST_ID).removeClass().addClass('button icon-button thanks-icon').attr('title', data.THANK_ALT).attr('href', data.THANK_PATH);
+        $("#lnk_thanks_post" + data.POST_ID).attr('title', data.THANK_ALT).attr('href', data.THANK_PATH);
+        $("#lnk_thanks_post" + data.POST_ID).find('i').removeClass("thanks-icon").removeClass("removethanks-icon").addClass(data.CLASS_ICON);
 
         //update profile
         update_profile(data)
