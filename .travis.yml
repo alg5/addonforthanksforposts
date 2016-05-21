@@ -39,8 +39,8 @@ env:
 branches:
   only:
     - master
-    - develop
-    - /^develop-.*$/
+    - dev_3_2.x
+    - /^dev_3_2.x-.*$/
 
 before_install:
   - sudo mkdir travis

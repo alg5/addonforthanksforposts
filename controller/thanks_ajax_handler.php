@@ -200,7 +200,7 @@ protected $thankers = array();
 		$poster_name_full =  '';
 		$this->get_poster_details($poster_id, $poster_name, $poster_name_full);
 		$action_togle = $action == 'thanks' ? 'rthanks' : 'thanks' ;
-		$path = './app.php/thanks_for_posts/' . $action_togle . '/' . $poster_id . '/' . $forum_id . '/' . $topic_id . '/' . $post_id . '?to_id=' . $poster_id;
+		$path = './thanks_for_posts/' . $action_togle . '/' . $poster_id . '/' . $forum_id . '/' . $topic_id . '/' . $post_id . '?to_id=' . $poster_id;
 		$thank_alt = ($action == 'thanks' ? $this->user->lang['REMOVE_THANKS'] :  $this->user->lang['THANK_POST']) . $poster_name_full;
 		$class_icon = $action == 'thanks' ? 'removethanks-icon' : 'thanks-icon';
 		$thank_img = "<a  href='" .  $path . "'   data-ajax='togle_thanks' title='" . $thank_alt . "' class='button icon-button " .  $class_icon . "'><span>&nbsp;</span></a>";
@@ -228,9 +228,9 @@ protected $thankers = array();
 			'POST_AUTHOR_FULL'			=>$poster_name_full,
 			'THANKS_COUNTERS_VIEW'		=> isset($this->config['thanks_counters_view']) ? $this->config['thanks_counters_view'] : false,
 			'POSTER_RECEIVE_COUNT'			=> $l_poster_receive_count,
-			'POSTER_RECEIVE_COUNT_LINK'	=> './app.php/thankslist/givens/' . $poster_id . '/false',
+			'POSTER_RECEIVE_COUNT_LINK'	=> './thankslist/givens/' . $poster_id . '/false',
 			'POSTER_GIVE_COUNT'				=> $l_poster_give_count,
-			'POSTER_GIVE_COUNT_LINK'	=> './app.php/thankslist/givens/' . $poster_id . '/true',
+			'POSTER_GIVE_COUNT_LINK'	=> './thankslist/givens/' . $poster_id . '/true',
 			'THANK_IMG'					=> $thank_img,
 			'THANK_PATH'				=> $path,
 			'IS_ALLOW_REMOVE_THANKS'	=> isset($this->config['remove_thanks']) ? (bool) $this->config['remove_thanks'] : true,
@@ -260,7 +260,9 @@ protected $thankers = array();
 		$poster_id = $row['poster_id'];
 		$poster_name = $row['username'];
 		$poster_give_count = $row['give'];
+		$l_poster_give_count = ($poster_give_count) ? $this->user->lang('THANKS', $poster_give_count) : '';
 		$poster_receive_count = $row['rcv'];
+		$l_poster_receive_count = ($poster_receive_count) ? $this->user->lang('THANKS', $poster_receive_count) : '';
 		$this->db->sql_freeresult($result);
 
 		$message = $this->user->lang['CLEAR_LIST_THANKS_POST'];
@@ -271,12 +273,12 @@ protected $thankers = array();
 				'POSTER_ID'				=> $poster_id,
 				'USER_ID'				=> $this->user->data['user_id'],
 				'THANK_ALT'		=> $this->user->lang['THANK_POST'] . $poster_name,
-				'THANK_PATH'	=> './app.php/thanks_for_posts/thanks/' . $poster_id . '/' . $forum_id . '/' . $topic_id . '/' . $post_id . '?to_id=' . $poster_id,
+				'THANK_PATH'	=> './thanks_for_posts/thanks/' . $poster_id . '/' . $forum_id . '/' . $topic_id . '/' . $post_id . '?to_id=' . $poster_id,
 				'S_POST_ANONYMOUS'			=> ($poster_id == ANONYMOUS) ? true : false,
-				'POSTER_RECEIVE_COUNT'		=> $poster_receive_count,
-				'POSTER_RECEIVE_COUNT_LINK'	=> append_sid("{$this->phpbb_root_path}thankslist.$this->php_ext", "mode=givens&amp;author_id={$poster_id}&amp;give=false"),
-				'POSTER_GIVE_COUNT'			=> $poster_give_count,
-				'POSTER_GIVE_COUNT_LINK'	=> append_sid("{$this->phpbb_root_path}thankslist.$this->php_ext", "mode=givens&amp;author_id={$poster_id}&amp;give=true"),
+				'POSTER_RECEIVE_COUNT'		=> $l_poster_receive_count,
+				'POSTER_RECEIVE_COUNT_LINK'	=> './thankslist/givens/' . $poster_id . '/false',
+				'POSTER_GIVE_COUNT'			=> $l_poster_give_count,
+				'POSTER_GIVE_COUNT_LINK'	=> './thankslist/givens/' . $poster_id . '/true',
 				'THANKS_COUNTERS_VIEW'		=> isset($this->config['thanks_counters_view']) ? $this->config['thanks_counters_view'] : false,
 			);
 	}
@@ -337,6 +339,8 @@ protected $thankers = array();
 		}
 		$return = ($return == '') ? false : ($return . $further_thanks_text);
 		$this->db->sql_freeresult($result);
+		//correct path
+		$return = str_replace('../', '', $return);
 		return $return;
 	}
 
@@ -351,6 +355,8 @@ protected $thankers = array();
 		{
 			$poster_name = $row['username'];
 			$poster_name_full = get_username_string('full', $poster_id, $row['username'], $row['user_colour']) ;
+			//correct path
+			$poster_name_full = str_replace('../', '', $poster_name_full);
 		}
 	}
 	private function get_key_by_post($post_id, $user_id)
