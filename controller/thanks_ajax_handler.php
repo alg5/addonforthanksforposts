@@ -275,12 +275,12 @@ protected $thankers = array();
 			    'CLASS_ICON'		=> 'thanks-icon',
 				'THANK_ALT'		    => $this->user->lang['THANK_POST'] . $poster_name,
 				'THANK_PATH'	    => './thanks_for_posts/thanks/' . $poster_id . '/' . $forum_id . '/' . $topic_id . '/' . $post_id . '?to_id=' . $poster_id,
-				'S_POST_ANONYMOUS'			=> ($poster_id == ANONYMOUS) ? true : false,
-				'POSTER_RECEIVE_COUNT'		=> $l_poster_receive_count,
+				'S_POST_ANONYMOUS'			        => ($poster_id == ANONYMOUS) ? true : false,
+				'POSTER_RECEIVE_COUNT'		    => $l_poster_receive_count,
 				'POSTER_RECEIVE_COUNT_LINK'	=> './thankslist/givens/' . $poster_id . '/false',
-				'POSTER_GIVE_COUNT'			=> $l_poster_give_count,
-				'POSTER_GIVE_COUNT_LINK'	=> './thankslist/givens/' . $poster_id . '/true',
-				'THANKS_COUNTERS_VIEW'		=> isset($this->config['thanks_counters_view']) ? $this->config['thanks_counters_view'] : false,
+				'POSTER_GIVE_COUNT'			        => $l_poster_give_count,
+				'POSTER_GIVE_COUNT_LINK'	        => './thankslist/givens/' . $poster_id . '/true',
+				'THANKS_COUNTERS_VIEW'		    => isset($this->config['thanks_counters_view']) ? $this->config['thanks_counters_view'] : false,
 			);
 	}
 

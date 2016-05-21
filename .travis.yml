@@ -36,11 +36,6 @@ env:
     - EPV="1"              # Should we run EPV (Extension Pre Validator) on your code?
     - PHPBB_BRANCH="3.2.x"
 
-branches:
-  only:
-    - master
-    - dev_3_2.x
-
 before_install:
   - sudo mkdir travis
   - git clone "https://github.com/nickvergessen/phpbb-ext-acme-demo.git"
