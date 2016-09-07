@@ -33,13 +33,13 @@ class thanks_ajax_handler
 
 	/** @var string */
 	protected $thanks_table;
-	
+
 	/** @var string */
 	protected $users_table;
-	
+
 	/** @var string */
 	protected $posts_table;
-	
+
 	/** @var rxu\PostsMerging\core\helper  */
 	protected $gfksx_helper;
 
@@ -77,7 +77,7 @@ class thanks_ajax_handler
 		$this->users_table = $users_table;
 		$this->posts_table = $posts_table;
 		$this->gfksx_helper = $gfksx_helper;
-		
+
 		$this->return = array(); // save returned data in here
 		$this->error = array(); // save errors in here
 	}
