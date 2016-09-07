@@ -4,11 +4,7 @@
             e.preventDefault();
             //set all thanks button invisible
             $('a[class$="thanks-icon"]').hide();
-            var action = '';
-            if ($(this).hasClass("thanks-icon"))
-                action = 'thanks';
-            else
-                action = 'rthanks';
+            var action = $(this).hasClass("thanks-icon") ? 'thanks' : 'rthanks';
 
             var post_block = $(this).parents('div.post');
             var post_id;
@@ -39,7 +35,7 @@
 
             var lnk = $(this);
             var n = noty({
-                text: L_CLEAR_LIST_THANKS_CONFIRM,
+                text: LA_CLEAR_LIST_THANKS_CONFIRM,
                 type: 'notification',
                 dismissQueue: false,
                 layout: 'topCenter',
@@ -49,7 +45,7 @@
 
                 theme: 'defaultTheme',
                 buttons: [{
-                    addClass: 'btn btn-primary', text: L_YES, onClick: function ($noty) {
+                    addClass: 'btn btn-primary', text: LA_YES, onClick: function ($noty) {
                         var path = U_ADDONFORTHANKSFORPOSTS_PATH + 'clear_thanks/0/' + $("input[name='forum_id']").val() + '/' + $("input[name='topic_id']").val() + '/' + post_id;
                         $.ajax({
                             type: 'POST',
@@ -63,7 +59,7 @@
                     }
                 },
 				{
-				    addClass: 'btn btn-danger', text: L_NO, onClick: function ($noty) {
+				    addClass: 'btn btn-danger', text: LA_NO, onClick: function ($noty) {
 				        $noty.close();
 				    }
 				}]
@@ -74,7 +70,7 @@
     $(document).ready(function (e) {
         add_ajax_thanks(e, $(document));
     });
-    $('#qr_posts').on('qr_loaded', add_ajax_thanks);
+    //$('#qr_posts').on('qr_loaded', add_ajax_thanks);
 
     function togle_thanks(data) {
         //set all thanks button visible
@@ -90,7 +86,7 @@
 
         //update icon and tooltip
         if (data.IS_ALLOW_REMOVE_THANKS)
-            $("#lnk_thanks_post" + data.POST_ID).removeClass().addClass('button icon-button ' + data.CLASS_ICON).attr('title', data.THANK_ALT).attr('href', data.THANK_PATH);
+            $("#lnk_thanks_post" + data.POST_ID).removeClass().addClass('button icon-button ' + data.CLASS_ICON).attr('title', data.THANK_ALT).attr('href', data.THANK_PATH.replace(/&amp;/g, '&'));
         else
             $("#lnk_thanks_post" + data.POST_ID).parent().hide();
         //update reput list
@@ -99,7 +95,7 @@
             if (!data.S_POST_ANONYMOUS && !data.S_IS_BOT && data.S_MOD_THANKS) {
                 updDiv = updDiv + "<ul class='post-buttons' style='float:left; position:static;'>";
                 updDiv = updDiv + "<li>";
-                updDiv = updDiv + "<a id='clear_list_thanks" + data.POST_ID + "' href='#' title='" + L_CLEAR_LIST_THANKS + "' class='button icon-button delete-icon' style='float:left'><span>" + L_CLEAR_LIST_THANKS + "</span></a>";
+                updDiv = updDiv + "<a id='clear_list_thanks" + data.POST_ID + "' href='#' title='" + LA_CLEAR_LIST_THANKS + "' class='button icon-button delete-icon' style='float:left'><span>" + LA_CLEAR_LIST_THANKS + "</span></a>";
                 updDiv = updDiv + "</li>";
                 updDiv = updDiv + "</ul>";
             }
@@ -121,7 +117,7 @@
             var updDiv = '';
             updDiv = updDiv + "<div class='notice'>";
             updDiv = updDiv + "<dl class='postbody'>";
-            updDiv = updDiv + "<dt class='small'><strong>" + L_REPUT + ":</strong>&nbsp;" + data.POST_REPUT + "</dt>";
+            updDiv = updDiv + "<dt class='small'><strong>" + LA_REPUT + ":</strong>&nbsp;" + data.POST_REPUT + "</dt>";
             updDiv = updDiv + "<dd>";
             if (data.S_THANKS_REPUT_GRAPHIC) {
                 updDiv = updDiv + "<div style='width: " + data.THANKS_REPUT_GRAPHIC_WIDTH + "; height: " + data.THANKS_REPUT_HEIGHT + ";'  class='thanks_reput_image_back'>";
@@ -150,7 +146,7 @@
         $('#list_thanks' + data['POST_ID']).html('');
 
         //update thanks img
-        $("#lnk_thanks_post" + data.POST_ID).removeClass().addClass('button icon-button thanks-icon').attr('title', data.THANK_ALT).attr('href', data.THANK_PATH);
+        $("#lnk_thanks_post" + data.POST_ID).removeClass().addClass('button icon-button thanks-icon').attr('title', data.THANK_ALT).attr('href', data.THANK_PATH.replace(/&amp;/g, '&'));
 
         //update profile
         update_profile(data)
@@ -164,7 +160,7 @@
                     $(this).html('');
                 }
                 else {
-                    rcv = L_RECEIVED + ": <a href='" + data.POSTER_RECEIVE_COUNT_LINK + "'>" + data.POSTER_RECEIVE_COUNT + "</a>";
+                    rcv = LA_RECEIVED + ": <a href='" + data.POSTER_RECEIVE_COUNT_LINK + "'>" + data.POSTER_RECEIVE_COUNT + "</a>";
                     $(this).html(rcv);
                 }
             });
@@ -175,7 +171,7 @@
                     $(this).html('');
                 }
                 else {
-                    give = L_GIVEN + ": <a href='" + data.POSTER_GIVE_COUNT_LINK + "'>" + data.POSTER_GIVE_COUNT + "</a>";
+                    give = LA_GIVEN + ": <a href='" + data.POSTER_GIVE_COUNT_LINK + "'>" + data.POSTER_GIVE_COUNT + "</a>";
                     $(this).html(give);
                 }
             });
@@ -211,4 +207,4 @@
             return results[1] || 0;
         }
     }
-})(jQuery, document);        // Avoid conflicts with other libraries
+})(jQuery, document);            // Avoid conflicts with other libraries

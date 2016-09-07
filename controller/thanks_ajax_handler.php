@@ -7,34 +7,85 @@
 *
 */
 
-namespace alg\AddonForThanksForPosts\controller;
+namespace alg\addonforthanksforposts\controller;
 
 class thanks_ajax_handler
 {
-protected $thankers = array();
-	public function __construct(\phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\auth\auth $auth, \phpbb\template\template $template, \phpbb\user $user, \phpbb\cache\driver\driver_interface $cache, $phpbb_root_path, $php_ext, \phpbb\request\request_interface $request, $table_prefix, $thanks_table, $users_table, $posts_table, \phpbb\controller\helper $controller_helper, \gfksx\ThanksForPosts\core\helper $gfksx_helper = null)
+	/** @var \phpbb\config\config */
+	protected $config;
+
+	/** @var \phpbb\db\driver\driver_interface */
+	protected $db;
+
+	/** @var \phpbb\auth\auth */
+	protected $auth;
+
+	/** @var \phpbb\user */
+	protected $user;
+
+	/** @var string phpbb_root_path */
+	protected $phpbb_root_path;
+
+	/** @var string phpEx */
+	protected $php_ext;
+	/** @var \phpbb\controller\helper */
+	protected $controller_helper;
+
+	/** @var string */
+	protected $thanks_table;
+	
+	/** @var string */
+	protected $users_table;
+	
+	/** @var string */
+	protected $posts_table;
+	
+	/** @var rxu\PostsMerging\core\helper  */
+	protected $gfksx_helper;
+
+	/** @var array */
+	protected $return_error = array();
+
+	/**
+	* Constructor
+	* @param \phpbb\config\config				$config				Config object
+	* @param \phpbb\db\driver\driver_interface	$db					DBAL object
+	* @param \phpbb\auth\auth					$auth				Auth object
+	* @param \phpbb\user						$user				User object
+	* @param string								$phpbb_root_path	phpbb_root_path
+	* @param string								$php_ext			phpEx
+	* @param \phpbb\controller\helper			$controller_helper	Controller helper object
+	* @param string								$thanks_table		ThanksForPost table name
+	* @param string								$users_table		Users table name
+	* @param string								$posts_table		Posts table name
+	* @param  rxu\ThanksForPosts\core\helper	$gfksx_helper		The main extension helper object
+	* @param array								$return_error		array
+
+	* @access public
+	*/
+
+	public function __construct(\phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\auth\auth $auth, \phpbb\user $user, $phpbb_root_path, $php_ext, \phpbb\controller\helper $controller_helper, $thanks_table, $users_table, $posts_table, \gfksx\ThanksForPosts\core\helper $gfksx_helper = null)
 	{
 		$this->config = $config;
 		$this->db = $db;
 		$this->auth = $auth;
-		$this->template = $template;
 		$this->user = $user;
-		$this->cache = $cache;
 		$this->phpbb_root_path = $phpbb_root_path;
 		$this->php_ext = $php_ext;
-		$this->request = $request;
-		$this->gfksx_helper = $gfksx_helper;
-		$this->return = array(); // save returned data in here
-		$this->error = array(); // save errors in here
+		$this->controller_helper = $controller_helper;
 		$this->thanks_table = $thanks_table;
 		$this->users_table = $users_table;
 		$this->posts_table = $posts_table;
-		$this->controller_helper = $controller_helper;
+		$this->gfksx_helper = $gfksx_helper;
+		
+		$this->return = array(); // save returned data in here
+		$this->error = array(); // save errors in here
 	}
 
 	public function main($action, $poster, $forum, $topic, $post)
 	{
 		$this->user->add_lang_ext('gfksx/ThanksForPosts', 'thanks_mod');
+		$this->user->add_lang_ext('alg/addonforthanksforposts', 'addon_tfp');
 		//not allowed like for anonymous
 		if ($this->user->data['is_bot'] || $this->user->data['user_id'] == ANONYMOUS  )
 		{
@@ -61,8 +112,7 @@ protected $thankers = array();
 		}
 		else
 		{
-			$this->user->add_lang_ext('alg/AddonForThanksForPosts', 'addon_tfp');
-			$this->error[] = array('error' => 'MAIN_EXT_NOT_INSTALLED');
+			$this->error[] =  array('error' => $this->user->lang['MAIN_EXT_NOT_INSTALLED']);
 		}
 
 		if (sizeof($this->error))
@@ -110,9 +160,9 @@ protected $thankers = array();
 
 						//notification
 						$thanks_data = array_merge($thanks_data, array(
-						'username'	=> $this->user->data['username'],
-						'lang_act'	=> 'GIVE',
-						'post_subject'	=> $this->get_post_subject($post_id),
+							'username'	=> $this->user->data['username'],
+							'lang_act'	=> 'GIVE',
+							'post_subject'	=> $this->get_post_subject($post_id),
 						));
 						$this->gfksx_helper->add_notification($thanks_data);
 
@@ -129,7 +179,7 @@ protected $thankers = array();
 						return;
 					}
 					$sql = "DELETE FROM " . $this->thanks_table . '
-								WHERE post_id ='.  $post_id ." AND user_id = " . (int) $user_id;
+								WHERE post_id ='.  (int) $post_id ." AND user_id = " . (int) $user_id;
 					$this->db->sql_query($sql);
 					$result = $this->db->sql_affectedrows($sql);
 					if ($result == 0)
@@ -152,10 +202,8 @@ protected $thankers = array();
 						$this->gfksx_helper->add_notification($thanks_data, 'gfksx.thanksforposts.notification.type.thanks_remove');
 					}
 					break;
-				default:
 			}//end switch
 		}
-		$i = 0;
 
 		//max post thanks
 		if (isset($this->config['thanks_post_reput_view']) ? $this->config['thanks_post_reput_view'] : false)
@@ -179,7 +227,7 @@ protected $thankers = array();
 			$sql .= " AND " . $this->db->sql_in_set('forum_id', $ex_fid_ary, true);
 		}
 
-		$sql .=  ') give,  (select count(poster_id)	 FROM  ' . $this->thanks_table .  ' WHERE  poster_id = ' . $poster_id;
+		$sql .=  ') give,  (select count(poster_id)	 FROM  ' . $this->thanks_table .  ' WHERE  poster_id = ' . (int) $poster_id;
 		if (sizeof($ex_fid_ary))
 		{
 			$sql .= " AND " . $this->db->sql_in_set('forum_id', $ex_fid_ary, true);
@@ -198,9 +246,8 @@ protected $thankers = array();
 		$lang_act = $action == 'thanks' ?  'GIVE' : 'REMOVE';
 		$poster_name = '';
 		$poster_name_full =  '';
-		$this->get_poster_details($poster_id, $poster_name, $poster_name_full);
 		$action_togle = $action == 'thanks' ? 'rthanks' : 'thanks' ;
-		$path = './thanks_for_posts/' . $action_togle . '/' . $poster_id . '/' . $forum_id . '/' . $topic_id . '/' . $post_id . '?to_id=' . $poster_id;
+		$path = append_sid("{$this->phpbb_root_path}viewtopic.$this->php_ext", 'f=' . (int) $forum_id . '&amp;p=' . (int) $post_id . '&amp;' . $action_togle . '=' .  (int) $post_id . '&amp;to_id=' . (int) $poster_id . '&amp;from_id=' . $this->user->data['user_id']);
 		$thank_alt = ($action == 'thanks' ? $this->user->lang['REMOVE_THANKS'] :  $this->user->lang['THANK_POST']) . $poster_name_full;
 		$class_icon = $action == 'thanks' ? 'removethanks-icon' : 'thanks-icon';
 		$thank_img = "<a  href='" .  $path . "'   data-ajax='togle_thanks' title='" . $thank_alt . "' class='button icon-button " .  $class_icon . "'><span>&nbsp;</span></a>";
@@ -211,7 +258,7 @@ protected $thankers = array();
 			'POST_REPUT'		=>  $post_reput,
 			'POST_ID'				=>  $post_id,
 			'POSTER_ID'				=>  $poster_id,
-			'USER_ID'										   =>  $this->user->data['user_id'],
+			'USER_ID'										=>  $this->user->data['user_id'],
 			'CLASS_ICON'									=> $action == 'thanks' ? 'removethanks-icon' : 'thanks-icon',
 			'S_THANKS_POST_REPUT_VIEW'		=> isset($this->config['thanks_post_reput_view']) ? (bool) $this->config['thanks_post_reput_view'] : false,
 			'THANK_ALT'										=> ($action == 'thanks' ? $this->user->lang['REMOVE_THANKS'] :  $this->user->lang['THANK_POST']) . $poster_name,
@@ -228,9 +275,9 @@ protected $thankers = array();
 			'POST_AUTHOR_FULL'			=>$poster_name_full,
 			'THANKS_COUNTERS_VIEW'		=> isset($this->config['thanks_counters_view']) ? $this->config['thanks_counters_view'] : false,
 			'POSTER_RECEIVE_COUNT'			=> $l_poster_receive_count,
-			'POSTER_RECEIVE_COUNT_LINK'	=> './thankslist/givens/' . $poster_id . '/false',
+			'POSTER_RECEIVE_COUNT_LINK'	=> $this->controller_helper->route('gfksx_ThanksForPosts_thankslist_controller_user', array('mode' => 'givens', 'author_id' => (int) $poster_id, 'give' => 'false', 'tslash' => '' )),
 			'POSTER_GIVE_COUNT'				=> $l_poster_give_count,
-			'POSTER_GIVE_COUNT_LINK'	=> './thankslist/givens/' . $poster_id . '/true',
+			'POSTER_GIVE_COUNT_LINK'	=> $this->controller_helper->route('gfksx_ThanksForPosts_thankslist_controller_user', array('mode' => 'givens', 'author_id' => (int) $poster_id, 'give' => 'true', 'tslash' => '' )),
 			'THANK_IMG'					=> $thank_img,
 			'THANK_PATH'				=> $path,
 			'IS_ALLOW_REMOVE_THANKS'	=> isset($this->config['remove_thanks']) ? (bool) $this->config['remove_thanks'] : true,
@@ -254,7 +301,7 @@ protected $thankers = array();
 					" , (select count(poster_id)  from " . $this->thanks_table . " t where p.poster_id= t.poster_id ) as rcv " .
 					" , (select count(user_id) as give  from  " . $this->thanks_table . "  t where user_id= " . $this->user->data['user_id'] . " ) as give " .
 					"  FROM  " . $this->posts_table .  " p JOIN " . $this->users_table . " u on p.poster_id = u.user_id " .
-					"  WHERE post_id=" . $post_id;
+					"  WHERE post_id=" . (int) $post_id;
 		$result = $this->db->sql_query($sql);
 		$row = $this->db->sql_fetchrow($result);
 		$poster_id = $row['poster_id'];
@@ -273,12 +320,12 @@ protected $thankers = array();
 				'POSTER_ID'				=> $poster_id,
 				'USER_ID'				=> $this->user->data['user_id'],
 				'THANK_ALT'		=> $this->user->lang['THANK_POST'] . $poster_name,
-				'THANK_PATH'	=> './thanks_for_posts/thanks/' . $poster_id . '/' . $forum_id . '/' . $topic_id . '/' . $post_id . '?to_id=' . $poster_id,
+				'THANK_PATH'	=> append_sid("{$this->phpbb_root_path}viewtopic.$this->php_ext", 'f=' . (int) $forum_id . '&amp;p=' . (int) $post_id . '&amp;clear_list_thanks=' .  (int) $post_id . '&amp;to_id=' . (int) $poster_id . '&amp;from_id=' . $this->user->data['user_id']),
 				'S_POST_ANONYMOUS'			=> ($poster_id == ANONYMOUS) ? true : false,
 				'POSTER_RECEIVE_COUNT'		=> $l_poster_receive_count,
-				'POSTER_RECEIVE_COUNT_LINK'	=> './thankslist/givens/' . $poster_id . '/false',
+				'POSTER_RECEIVE_COUNT_LINK'	=> $this->controller_helper->route('gfksx_ThanksForPosts_thankslist_controller_user', array('mode' => 'givens', 'author_id' => (int) $poster_id, 'give' => 'false', 'tslash' => '' )),
 				'POSTER_GIVE_COUNT'			=> $l_poster_give_count,
-				'POSTER_GIVE_COUNT_LINK'	=> './thankslist/givens/' . $poster_id . '/true',
+				'POSTER_GIVE_COUNT_LINK'	=> $this->controller_helper->route('gfksx_ThanksForPosts_thankslist_controller_user', array('mode' => 'givens', 'author_id' => (int) $poster_id, 'give' => 'true', 'tslash' => '' )),
 				'THANKS_COUNTERS_VIEW'		=> isset($this->config['thanks_counters_view']) ? $this->config['thanks_counters_view'] : false,
 			);
 	}
@@ -287,8 +334,8 @@ protected $thankers = array();
 	private function already_thanked($post_id, $user_id)
 	{
 		$sql = "SELECT count(*) as counter from " . $this->thanks_table .
-				" WHERE post_id = " . $post_id .
-				" AND user_id = " . $user_id ;
+				" WHERE post_id = " . (int) $post_id .
+				" AND user_id = " . (int) $user_id ;
 		$result = $this->db->sql_query($sql);
 		$thanked = (int) $this->db->sql_fetchfield('counter');
 		$this->db->sql_freeresult($result);
@@ -309,7 +356,7 @@ protected $thankers = array();
 		// Go ahead and pull all data for this topic
 		$sql = 'SELECT u.user_id, u.username, u.username_clean, u.user_colour, t.thanks_time ' .
 				' FROM ' . $this->thanks_table . ' t join ' . $this->users_table . ' u on t.user_id=u.user_id ' .
-				' WHERE post_id = ' . $post_id .
+				' WHERE post_id = ' . (int) $post_id .
 				' ORDER BY t.thanks_time DESC';
 
 		$result = $this->db->sql_query($sql);
@@ -344,37 +391,9 @@ protected $thankers = array();
 		return $return;
 	}
 
-	private function get_poster_details($poster_id, &$poster_name, &$poster_name_full)
-	{
-		$sql = 'SELECT username, user_colour FROM ' . $this->users_table .
-					' WHERE user_id = ' . $poster_id;
-		$result = $this->db->sql_query($sql);
-		$row = $this->db->sql_fetchrow($result);
-		$this->db->sql_freeresult($result);
-		if ($row)
-		{
-			$poster_name = $row['username'];
-			$poster_name_full = get_username_string('full', $poster_id, $row['username'], $row['user_colour']) ;
-			//correct path
-			$poster_name_full = str_replace('../', '', $poster_name_full);
-		}
-	}
-	private function get_key_by_post($post_id, $user_id)
-	{
-		$i = 0;
-		foreach ((array) $this->thankers as $key => $value)
-		{
-			if ($this->thankers[$key]['post_id'] == $post_id && $this->thankers[$key]['user_id'] == $user_id)
-			{
-				return $i;
-			}
-			$i++;
-		}
-		return $thanked;
-	}
 	private function get_post_subject($post_id)
 	{
-		$sql = 'SELECT post_subject FROM ' . $this->posts_table . ' WHERE post_id=' . $post_id;
+		$sql = 'SELECT post_subject FROM ' . $this->posts_table . ' WHERE post_id=' . (int) $post_id;
 		$result = $this->db->sql_query($sql, 3600);
 		$post_subject =  $this->db->sql_fetchfield('post_subject');
 		$this->db->sql_freeresult($result);

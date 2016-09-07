@@ -1,5 +1,5 @@
 {
-    "name": "alg/AddonForThanksForPosts",
+    "name": "alg/addonforthanksforposts",
     "type": "phpbb-extension",
     "description": "Adds ajax functionality to main extension to update result of set/delete likes without reloading the page",
     "homepage": "https://github.com/alg5/AddonForThanksForPosts",

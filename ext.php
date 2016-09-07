@@ -7,7 +7,7 @@
 *
 */
 
-namespace alg\AddonForThanksForPosts;
+namespace alg\addonforthanksforposts;
 
 /**
 * Main extension class for this extension.

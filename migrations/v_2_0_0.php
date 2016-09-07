@@ -1,19 +1,19 @@
 <?php
 /**
 *
-* @package AddonForThanksForPosts
+* @package addonforthanksforposts
 * @copyright (c) alg
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
-namespace alg\AddonForThanksForPosts\migrations;
+namespace alg\addonforthanksforposts\migrations;
 
 class v_2_0_0 extends \phpbb\db\migration\migration
 {
 	public function effectively_installed()
 	{
-		return isset($this->config['AddonForThanksForPosts']) && version_compare($this->config['AddonForThanksForPosts'], '2.0.*', '>=');
+		return isset($this->config['addonforthanksforposts']) && version_compare($this->config['addonforthanksforposts'], '2.0.*', '>=');
 	}
 
 	static public function depends_on()
@@ -36,7 +36,7 @@ class v_2_0_0 extends \phpbb\db\migration\migration
 		return array(
 			// Add configs
 			// Current version
-			array('config.add', array('AddonForThanksForPosts', '2.0.3')),
+			array('config.add', array('addonforthanksforposts', '2.0.3')),
 		);
 	}
 }
