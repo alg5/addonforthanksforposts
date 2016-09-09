@@ -3,7 +3,11 @@
         elements.find('a[class$="thanks-icon"]').on('click', function (e) {
             e.preventDefault();
             //set all thanks button invisible
-            $('a[class$="thanks-icon"]').hide();
+            if ($(this).hasClass("disabled")) {
+                return false;
+            }
+            $('a[class$="thanks-icon"]').addClass("disabled");
+
             var action = $(this).hasClass("thanks-icon") ? 'thanks' : 'rthanks';
 
             var post_block = $(this).parents('div.post');
@@ -70,12 +74,10 @@
     $(document).ready(function (e) {
         add_ajax_thanks(e, $(document));
     });
-    //$('#qr_posts').on('qr_loaded', add_ajax_thanks);
 
     function togle_thanks(data) {
         //set all thanks button visible
-        $('a[class$="thanks-icon"]').show();
-
+       $("a.disabled").removeClass("disabled");
         if (data['ERROR']) {
             for (i = 0; i < data['ERROR'].length; i++) {
                 output_info_new(data['ERROR'][i], 'error');
@@ -186,7 +188,6 @@
             text: message,
             type: type,
             timeout: expire,
-            //dismissQueue: false,
             layout: 'topRight',
             theme: 'defaultTheme',
             callback: {
@@ -207,4 +208,4 @@
             return results[1] || 0;
         }
     }
-})(jQuery, document);            // Avoid conflicts with other libraries
+})(jQuery, document);                // Avoid conflicts with other libraries
