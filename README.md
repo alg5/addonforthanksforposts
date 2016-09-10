@@ -1,3 +1,3 @@
 AddonForThanksForPosts
 ======================
-[![Build Status](https://travis-ci.org/alg5/AddonForThanksForPosts.svg?branch=master)](https://travis-ci.org/alg5/AddonForThanksForPosts)
+[![Build Status](https://travis-ci.org/alg5/addonforthanksforposts.svg?branch=dev_3.2.x)](https://travis-ci.org/alg5/addonforthanksforposts)

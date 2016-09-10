@@ -6,14 +6,14 @@
 
         $(btnsLike).on('click', function (e) {
             e.preventDefault();
-            
+
             //set all thanks button invisible
-            $(btnsLike).hide();
-            var action = '';
-            if ($(this).hasClass("thanks-icon"))
-                action = 'thanks';
-            else
-                action = 'rthanks';
+            //$(btnsLike).hide();
+            if ($(this).hasClass("disabled")) {
+                return false;
+            }
+            $(btnsLike).addClass("disabled");
+            var action = $(this).hasClass("thanks-icon") ? 'thanks' : 'rthanks';
 
             var post_block = $(this).parents('div.post');
             var post_id;
@@ -44,7 +44,7 @@
 
             var lnk = $(this);
             var n = noty({
-                text: L_CLEAR_LIST_THANKS_CONFIRM,
+                text: LA_CLEAR_LIST_THANKS_CONFIRM,
                 type: 'notification',
                 dismissQueue: false,
                 layout: 'topCenter',
@@ -54,7 +54,7 @@
 
                 theme: 'defaultTheme',
                 buttons: [{
-                    addClass: 'btn btn-primary', text: L_YES, onClick: function ($noty) {
+                    addClass: 'btn btn-primary', text: LA_YES, onClick: function ($noty) {
                         var path = U_ADDONFORTHANKSFORPOSTS_PATH + 'clear_thanks/' + poster_id + '/' + $("input[name='forum_id']").val() + '/' + $("input[name='topic_id']").val() + '/' + post_id;
                         $.ajax({
                             type: 'POST',
@@ -68,7 +68,7 @@
                     }
                 },
 				{
-				    addClass: 'btn btn-danger', text: L_NO, onClick: function ($noty) {
+				    addClass: 'btn btn-danger', text: LA_NO, onClick: function ($noty) {
 				        $noty.close();
 				    }
 				}]
@@ -86,8 +86,7 @@
         var btnsLike = $('i.icon').filter(function (index) {
             return $(this).is('[class*="thanks-icon"]');
         });
-
-        $(btnsLike).show();
+        $(btnsLike).removeClass("disabled");
 
         if (data['ERROR']) {
             for (i = 0; i < data['ERROR'].length; i++) {
@@ -98,10 +97,9 @@
         output_info_new(data['SUCCESS'], 'warning');
 
         //update icon and tooltip
-        if (data.IS_ALLOW_REMOVE_THANKS)
-        {
-            $("#lnk_thanks_post" + data.POST_ID).attr('title', data.THANK_ALT).attr('href', data.THANK_PATH);
-            $("#lnk_thanks_post" + data.POST_ID).find('i').removeClass("thanks-icon").removeClass("removethanks-icon").addClass( data.CLASS_ICON);
+        if (data.IS_ALLOW_REMOVE_THANKS) {
+            $("#lnk_thanks_post" + data.POST_ID).attr('title', data.THANK_ALT).attr('href', data.THANK_PATH.replace(/&amp;/g, '&'));
+            $("#lnk_thanks_post" + data.POST_ID).find('i').removeClass("thanks-icon").removeClass("removethanks-icon").addClass(data.CLASS_ICON);
         }
         else
             $("#lnk_thanks_post" + data.POST_ID).parent().hide();
@@ -112,9 +110,9 @@
             if (!data.S_POST_ANONYMOUS && !data.S_IS_BOT && data.S_MOD_THANKS) {
                 updDiv = updDiv + "<ul class='post-buttons' style='float:left; position:static;'>";
                 updDiv = updDiv + "<li>";
-                updDiv = updDiv + "<a id='clear_list_thanks" + data.POST_ID + "' href='#' title='" + L_CLEAR_LIST_THANKS + "' class='button button-icon-only' style='float:left;'>"
-                updDiv = updDiv + "<i class='icon fa-times fa-fw' aria-hidden='true'></i><span class='sr-only'>" + L_CLEAR_LIST_THANKS + "</span>";
-                 updDiv = updDiv + "</a>";
+                updDiv = updDiv + "<a id='clear_list_thanks" + data.POST_ID + "' href='#' title='" + LA_CLEAR_LIST_THANKS + "' class='button button-icon-only' style='float:left;'>"
+                updDiv = updDiv + "<i class='icon fa-times fa-fw' aria-hidden='true'></i><span class='sr-only'>" + LA_CLEAR_LIST_THANKS + "</span>";
+                updDiv = updDiv + "</a>";
                 updDiv = updDiv + "</li>";
                 updDiv = updDiv + "</ul>";
             }
@@ -125,7 +123,7 @@
             updDiv = updDiv + "</dl >";
             updDiv = updDiv + "</div >";
 
-             $('#list_thanks' + data.POST_ID).html(updDiv);
+            $('#list_thanks' + data.POST_ID).html(updDiv);
         }
         else {
             $('#list_thanks' + data.POST_ID).html('');
@@ -136,7 +134,7 @@
             var updDiv = '';
             updDiv = updDiv + "<div class='notice'>";
             updDiv = updDiv + "<dl class='postbody'>";
-            updDiv = updDiv + "<dt class='small'><strong>" + L_REPUT + ":</strong>&nbsp;" + data.POST_REPUT + "</dt>";
+            updDiv = updDiv + "<dt class='small'><strong>" + LA_REPUT + ":</strong>&nbsp;" + data.POST_REPUT + "</dt>";
             updDiv = updDiv + "<dd>";
             if (data.S_THANKS_REPUT_GRAPHIC) {
                 updDiv = updDiv + "<div style='width: " + data.THANKS_REPUT_GRAPHIC_WIDTH + "; height: " + data.THANKS_REPUT_HEIGHT + ";'  class='thanks_reput_image_back'>";
@@ -165,8 +163,7 @@
         $('#list_thanks' + data['POST_ID']).html('');
 
         //update thanks img
-        //$("#lnk_thanks_post" + data.POST_ID).removeClass().addClass('button icon-button thanks-icon').attr('title', data.THANK_ALT).attr('href', data.THANK_PATH);
-        $("#lnk_thanks_post" + data.POST_ID).attr('title', data.THANK_ALT).attr('href', data.THANK_PATH);
+        $("#lnk_thanks_post" + data.POST_ID).attr('title', data.THANK_ALT).attr('href', data.THANK_PATH.replace(/&amp;/g, '&'));
         $("#lnk_thanks_post" + data.POST_ID).find('i').removeClass("thanks-icon").removeClass("removethanks-icon").addClass(data.CLASS_ICON);
 
         //update profile
@@ -181,7 +178,7 @@
                     $(this).html('');
                 }
                 else {
-                    rcv = L_RECEIVED + ": <a href='" + data.POSTER_RECEIVE_COUNT_LINK + "'>" + data.POSTER_RECEIVE_COUNT + "</a>";
+                    rcv = LA_RECEIVED + ": <a href='" + data.POSTER_RECEIVE_COUNT_LINK + "'>" + data.POSTER_RECEIVE_COUNT + "</a>";
                     $(this).html(rcv);
                 }
             });
@@ -192,7 +189,7 @@
                     $(this).html('');
                 }
                 else {
-                    give = L_GIVEN + ": <a href='" + data.POSTER_GIVE_COUNT_LINK + "'>" + data.POSTER_GIVE_COUNT + "</a>";
+                    give = LA_GIVEN + ": <a href='" + data.POSTER_GIVE_COUNT_LINK + "'>" + data.POSTER_GIVE_COUNT + "</a>";
                     $(this).html(give);
                 }
             });
@@ -207,7 +204,6 @@
             text: message,
             type: type,
             timeout: expire,
-            //dismissQueue: false,
             layout: 'topRight',
             theme: 'defaultTheme',
             callback: {
@@ -228,4 +224,4 @@
             return results[1] || 0;
         }
     }
-})(jQuery, document);         // Avoid conflicts with other libraries
+})(jQuery, document);           // Avoid conflicts with other libraries
