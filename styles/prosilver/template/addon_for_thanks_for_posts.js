@@ -102,8 +102,8 @@
                 updDiv = updDiv + "</ul>";
             }
             if (!data.S_POST_ANONYMOUS && !data.S_IS_BOT) {
-                updDiv = updDiv + "<dl class='postbody small'>";
-                updDiv = updDiv + "<dt>" + data.THANK_TEXT + data.POST_AUTHOR_FULL + data.THANK_TEXT_2 + "</dt>";
+                updDiv = updDiv + "<dl>";
+                updDiv = updDiv + "<dt class='small'>" + data.THANK_TEXT + data.POST_AUTHOR_FULL + data.THANK_TEXT_2 + "</dt>";
                 updDiv = updDiv + "<dd>" + data.THANKS + "</dd>";
                 updDiv = updDiv + "</dl >";
             }
@@ -118,7 +118,7 @@
         if (data.S_THANKS_POST_REPUT_VIEW && data.POST_REPUT && !data.S_POST_ANONYMOUS && !data.S_IS_BOT) {
             var updDiv = '';
             updDiv = updDiv + "<div class='notice'>";
-            updDiv = updDiv + "<dl class='postbody'>";
+            updDiv = updDiv + "<dl>";
             updDiv = updDiv + "<dt class='small'><strong>" + LA_REPUT + ":</strong>&nbsp;" + data.POST_REPUT + "</dt>";
             updDiv = updDiv + "<dd>";
             if (data.S_THANKS_REPUT_GRAPHIC) {
