@@ -1,9 +1,9 @@
-﻿(function ($, document) { // Avoid conflicts with other libraries
+﻿﻿(function ($, document) { // Avoid conflicts with other libraries
     function add_ajax_thanks(e, elements) {
-        var btnsLike = elements.find('i.icon').filter(function (index) {
-            return $(this).is('[class*="thanks-icon"]');
-        });
-
+       var btnsLike = elements.find('a').filter(function (index) {
+            return $(this).find('i.icon').is('[class*="thanks-icon"]');
+        });        
+//        console.log(btnsLike);
         $(btnsLike).on('click', function (e) {
             e.preventDefault();
 
@@ -13,10 +13,11 @@
                 return false;
             }
             $(btnsLike).addClass("disabled");
-            var action = $(this).hasClass("thanks-icon") ? 'thanks' : 'rthanks';
-
+            var action = $(this).find('i.icon').hasClass("thanks-icon") ? 'thanks' : 'rthanks';
+            //console.log('action = ' + action);
             var post_block = $(this).parents('div.post');
-            var post_id;
+            // console.log(post_block);
+           var post_id;
             if ($(post_block).attr("id") == 'post-article') {
                 post_id = $(post_block).prev().attr('id').replace(/p/g, '');
             }
@@ -29,6 +30,7 @@
             $.ajax({
                 type: 'POST',
                 dataType: 'json',
+                cache: false,
                 url: path,
                 success: function (data) {
                     togle_thanks(data);
@@ -82,10 +84,10 @@
     $('#qr_posts').on('qr_loaded', add_ajax_thanks);
 
     function togle_thanks(data) {
-        //set all thanks button visible
-        var btnsLike = $('i.icon').filter(function (index) {
-            return $(this).is('[class*="thanks-icon"]');
-        });
+       var btnsLike = $('a').filter(function (index) {
+            return $(this).find('i.icon').is('[class*="thanks-icon"]');
+        });        
+        //set all thanks button enabled
         $(btnsLike).removeClass("disabled");
 
         if (data['ERROR']) {
@@ -224,4 +226,4 @@
             return results[1] || 0;
         }
     }
-})(jQuery, document);           // Avoid conflicts with other libraries
+})(jQuery, document);                // Avoid conflicts with other libraries
