@@ -88,7 +88,13 @@
 
         //update icon and tooltip
         if (data.IS_ALLOW_REMOVE_THANKS)
+        {
             $("#lnk_thanks_post" + data.POST_ID).removeClass().addClass('button icon-button ' + data.CLASS_ICON).attr('title', data.THANK_ALT).attr('href', data.THANK_PATH.replace(/&amp;/g, '&'));
+           
+            //patch for quick links
+            $(".clone-first a#lnk_thanks_post" + data.POST_ID).removeClass().addClass(data.CLASS_ICON).attr('title', data.THANK_ALT).attr('href', data.THANK_PATH.replace(/&amp;/g, '&'));
+            $(".clone-first a#lnk_thanks_post" + data.POST_ID).find('span').html(data.THANK_ALT_SHORT);
+        }
         else
             $("#lnk_thanks_post" + data.POST_ID).parent().hide();
         //update reput list
@@ -102,8 +108,8 @@
                 updDiv = updDiv + "</ul>";
             }
             if (!data.S_POST_ANONYMOUS && !data.S_IS_BOT) {
-                updDiv = updDiv + "<dl>";
-                updDiv = updDiv + "<dt class='small'>" + data.THANK_TEXT + data.POST_AUTHOR_FULL + data.THANK_TEXT_2 + "</dt>";
+                updDiv = updDiv + "<dl class='postbody small'>";
+                updDiv = updDiv + "<dt>" + data.THANK_TEXT + data.POST_AUTHOR_FULL + data.THANK_TEXT_2 + "</dt>";
                 updDiv = updDiv + "<dd>" + data.THANKS + "</dd>";
                 updDiv = updDiv + "</dl >";
             }
@@ -118,7 +124,7 @@
         if (data.S_THANKS_POST_REPUT_VIEW && data.POST_REPUT && !data.S_POST_ANONYMOUS && !data.S_IS_BOT) {
             var updDiv = '';
             updDiv = updDiv + "<div class='notice'>";
-            updDiv = updDiv + "<dl>";
+            updDiv = updDiv + "<dl class='postbody'>";
             updDiv = updDiv + "<dt class='small'><strong>" + LA_REPUT + ":</strong>&nbsp;" + data.POST_REPUT + "</dt>";
             updDiv = updDiv + "<dd>";
             if (data.S_THANKS_REPUT_GRAPHIC) {

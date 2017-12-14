@@ -28,6 +28,7 @@ class thanks_ajax_handler
 
 	/** @var string phpEx */
 	protected $php_ext;
+    
 	/** @var \phpbb\controller\helper */
 	protected $controller_helper;
 
@@ -262,6 +263,7 @@ class thanks_ajax_handler
 			'CLASS_ICON'									=> $action == 'thanks' ? 'removethanks-icon' : 'thanks-icon',
 			'S_THANKS_POST_REPUT_VIEW'		=> isset($this->config['thanks_post_reput_view']) ? (bool) $this->config['thanks_post_reput_view'] : false,
 			'THANK_ALT'										=> ($action == 'thanks' ? $this->user->lang['REMOVE_THANKS'] :  $this->user->lang['THANK_POST']) . $poster_name,
+			'THANK_ALT_SHORT'				=> ($action == 'thanks' ? $this->user->lang['REMOVE_THANKS_SHORT'] :  $this->user->lang['THANK_POST_SHORT']),
 			'S_THANKS_REPUT_GRAPHIC' 			=> isset($this->config['thanks_reput_graphic']) ? (bool) $this->config['thanks_reput_graphic'] : false,
 			'THANKS_REPUT_GRAPHIC_WIDTH'	=> isset($this->config['thanks_reput_level']) ? (isset($this->config['thanks_reput_height']) ? sprintf('%dpx', $this->config['thanks_reput_level']*$this->config['thanks_reput_height']) : false) : false,
 			'THANKS_REPUT_HEIGHT'		=> isset($this->config['thanks_reput_height']) ? sprintf('%dpx', $this->config['thanks_reput_height']) : false,
