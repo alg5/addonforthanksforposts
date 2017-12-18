@@ -94,9 +94,13 @@
             //patch for quick links
             $(".clone-first a#lnk_thanks_post" + data.POST_ID).removeClass().addClass(data.CLASS_ICON).attr('title', data.THANK_ALT).attr('href', data.THANK_PATH.replace(/&amp;/g, '&'));
             $(".clone-first a#lnk_thanks_post" + data.POST_ID).find('span').html(data.THANK_ALT_SHORT);
-        }
+         }
         else
+        {
             $("#lnk_thanks_post" + data.POST_ID).parent().hide();
+            //patch for quick links
+             $(".clone-first a#lnk_thanks_post" + data.POST_ID).parent().hide();
+        }
         //update reput list
         if (data.THANKS && data.THANKS_POSTLIST_VIEW) {
             var updDiv = "<div class='notice'>";
