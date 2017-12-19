@@ -109,7 +109,11 @@
             $(".clone-first a#lnk_thanks_post" + data.POST_ID).find('i').removeClass("thanks-icon").removeClass("removethanks-icon").addClass(data.CLASS_ICON);
          }
          else
-            $("#lnk_thanks_post" + data.POST_ID).parent().hide();
+         {
+            $("#lnk_thanks_post" + data.POST_ID).parent().hide();   
+            //patch for quick links
+            $(".clone-first a#lnk_thanks_post" + data.POST_ID).parent().hide();
+         }
         //update reput list
         if (data.THANKS && data.THANKS_POSTLIST_VIEW) {
             var updDiv = "<div class='notice'>";
