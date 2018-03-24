@@ -58,13 +58,13 @@ class thanks_ajax_handler
 	* @param string								$thanks_table		ThanksForPost table name
 	* @param string								$users_table		Users table name
 	* @param string								$posts_table		Posts table name
-	* @param  rxu\ThanksForPosts\core\helper	$gfksx_helper		The main extension helper object
+	* @param  rxu\thanksforposts\core\helper	$gfksx_helper		The main extension helper object
 	* @param array								$return_error		array
 
 	* @access public
 	*/
 
-	public function __construct(\phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\auth\auth $auth, \phpbb\user $user, $phpbb_root_path, $php_ext, \phpbb\controller\helper $controller_helper, $thanks_table, $users_table, $posts_table, \gfksx\ThanksForPosts\core\helper $gfksx_helper = null)
+	public function __construct(\phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\auth\auth $auth, \phpbb\user $user, $phpbb_root_path, $php_ext, \phpbb\controller\helper $controller_helper, $thanks_table, $users_table, $posts_table, \gfksx\thanksforposts\core\helper $gfksx_helper = null)
 	{
 		$this->config = $config;
 		$this->db = $db;
@@ -84,7 +84,7 @@ class thanks_ajax_handler
 
 	public function main($action, $poster, $forum, $topic, $post)
 	{
-		$this->user->add_lang_ext('gfksx/ThanksForPosts', 'thanks_mod');
+		$this->user->add_lang_ext('gfksx/thanksforposts', 'thanks_mod');
 		$this->user->add_lang_ext('alg/addonforthanksforposts', 'addon_tfp');
 		//not allowed like for anonymous
 		if ($this->user->data['is_bot'] || $this->user->data['user_id'] == ANONYMOUS  )
@@ -276,9 +276,9 @@ class thanks_ajax_handler
 			'POST_AUTHOR_FULL'			=>$poster_name_full,
 			'THANKS_COUNTERS_VIEW'		=> isset($this->config['thanks_counters_view']) ? $this->config['thanks_counters_view'] : false,
 			'POSTER_RECEIVE_COUNT'			=> $l_poster_receive_count,
-			'POSTER_RECEIVE_COUNT_LINK'	=> $this->controller_helper->route('gfksx_ThanksForPosts_thankslist_controller_user', array('mode' => 'givens', 'author_id' => (int) $poster_id, 'give' => 'false', 'tslash' => '' )),
+			'POSTER_RECEIVE_COUNT_LINK'	=> $this->controller_helper->route('gfksx_thanksforposts_thankslist_controller_user', array('mode' => 'givens', 'author_id' => (int) $poster_id, 'give' => 'false', 'tslash' => '' )),
 			'POSTER_GIVE_COUNT'				=> $l_poster_give_count,
-			'POSTER_GIVE_COUNT_LINK'	=> $this->controller_helper->route('gfksx_ThanksForPosts_thankslist_controller_user', array('mode' => 'givens', 'author_id' => (int) $poster_id, 'give' => 'true', 'tslash' => '' )),
+			'POSTER_GIVE_COUNT_LINK'	=> $this->controller_helper->route('gfksx_thanksforposts_thankslist_controller_user', array('mode' => 'givens', 'author_id' => (int) $poster_id, 'give' => 'true', 'tslash' => '' )),
 			'THANK_IMG'					=> $thank_img,
 			'THANK_PATH'				=> $path,
 			'IS_ALLOW_REMOVE_THANKS'	=> isset($this->config['remove_thanks']) ? (bool) $this->config['remove_thanks'] : true,
@@ -325,9 +325,9 @@ class thanks_ajax_handler
 				'THANK_PATH'	=> append_sid("{$this->phpbb_root_path}viewtopic.$this->php_ext", 'f=' . (int) $forum_id . '&amp;p=' . (int) $post_id . '&amp;clear_list_thanks=' .  (int) $post_id . '&amp;to_id=' . (int) $poster_id . '&amp;from_id=' . $this->user->data['user_id']),
 				'S_POST_ANONYMOUS'			=> ($poster_id == ANONYMOUS) ? true : false,
 				'POSTER_RECEIVE_COUNT'		=> $l_poster_receive_count,
-				'POSTER_RECEIVE_COUNT_LINK'	=> $this->controller_helper->route('gfksx_ThanksForPosts_thankslist_controller_user', array('mode' => 'givens', 'author_id' => (int) $poster_id, 'give' => 'false', 'tslash' => '' )),
+				'POSTER_RECEIVE_COUNT_LINK'	=> $this->controller_helper->route('gfksx_thanksforposts_thankslist_controller_user', array('mode' => 'givens', 'author_id' => (int) $poster_id, 'give' => 'false', 'tslash' => '' )),
 				'POSTER_GIVE_COUNT'			=> $l_poster_give_count,
-				'POSTER_GIVE_COUNT_LINK'	=> $this->controller_helper->route('gfksx_ThanksForPosts_thankslist_controller_user', array('mode' => 'givens', 'author_id' => (int) $poster_id, 'give' => 'true', 'tslash' => '' )),
+				'POSTER_GIVE_COUNT_LINK'	=> $this->controller_helper->route('gfksx_thanksforposts_thankslist_controller_user', array('mode' => 'givens', 'author_id' => (int) $poster_id, 'give' => 'true', 'tslash' => '' )),
 				'THANKS_COUNTERS_VIEW'		=> isset($this->config['thanks_counters_view']) ? $this->config['thanks_counters_view'] : false,
 			);
 	}
