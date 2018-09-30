@@ -402,4 +402,3 @@ class thanks_ajax_handler
 		return $post_subject;
 	}
 }
-
