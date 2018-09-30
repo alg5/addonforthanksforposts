@@ -320,7 +320,7 @@ class thanks_ajax_handler
 				'POST_ID'				=> $post_id,
 				'POSTER_ID'				=> $poster_id,
 				'USER_ID'				=> $this->user->data['user_id'],
-			    'CLASS_ICON'		=> 'thanks-icon',
+				'CLASS_ICON'		=> 'thanks-icon',
 				'THANK_ALT'		=> $this->user->lang['THANK_POST'] . $poster_name,
 				'THANK_PATH'	=> append_sid("{$this->phpbb_root_path}viewtopic.$this->php_ext", 'f=' . (int) $forum_id . '&amp;p=' . (int) $post_id . '&amp;clear_list_thanks=' .  (int) $post_id . '&amp;to_id=' . (int) $poster_id . '&amp;from_id=' . $this->user->data['user_id']),
 				'S_POST_ANONYMOUS'			=> ($poster_id == ANONYMOUS) ? true : false,
