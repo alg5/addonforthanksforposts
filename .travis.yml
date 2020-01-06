@@ -1,6 +1,6 @@
 # Opt into fully virtualized infrastructure
 sudo: required
-dist: precise
+dist: xenial
 
 language: php
 
@@ -32,7 +32,7 @@ matrix:
       env: DB=mysqli
   allow_failures:
     - php: nightly
-    - php: hhvm
+    - php: hhvmdis
   fast_finish: true
 
 env:
