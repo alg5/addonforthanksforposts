@@ -185,9 +185,10 @@
                 var rcv = '';
                 if (data.POSTER_RECEIVE_COUNT == 0) {
                     $(this).html('');
-                } else {
-                    rcv = LA_RECEIVED + ": <a href='" + data.POSTER_RECEIVE_COUNT_LINK + "'>" + data.POSTER_RECEIVE_COUNT + "</a>";
-                    $(this).html(rcv);
+                } 
+		else {
+			rcv = "<strong>" + LA_RECEIVED + ":</strong>&nbsp;<a href='" + data.POSTER_RECEIVE_COUNT_LINK + "'>" + data.POSTER_RECEIVE_COUNT + "</a>";
+			$(this).html(rcv);
                 }
             });
 
@@ -196,7 +197,7 @@
                 if (data.POSTER_GIVE_COUNT == 0) {
                     $(this).html('');
                 } else {
-                    give = LA_GIVEN + ": <a href='" + data.POSTER_GIVE_COUNT_LINK + "'>" + data.POSTER_GIVE_COUNT + "</a>";
+                    give = "<strong>" + LA_GIVEN + ":</strong>&nbsp;<a href='" + data.POSTER_GIVE_COUNT_LINK + "'>" + data.POSTER_GIVE_COUNT + "</a>";
                     $(this).html(give);
                 }
             });
