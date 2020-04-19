@@ -248,15 +248,16 @@ class thanks_ajax_handler
 		$poster_name_full =  '';
 		$sql = 'SELECT user_id, username, user_colour FROM  ' . $this->users_table . ' WHERE user_id=' . (int) $poster_id;
 		$result = $this->db->sql_query($sql);
-		while($row = $this->db->sql_fetchrow($result))
+		while ($row = $this->db->sql_fetchrow($result))
 		{
 			$poster_name = $row['username'];
 			$poster_name_full =  get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']);
 		}
-		$this->db->sql_freeresult($result);		
+		$this->db->sql_freeresult($result);
 		$action_togle = $action == 'thanks' ? 'rthanks' : 'thanks' ;
 		$path = append_sid("{$this->phpbb_root_path}viewtopic.{$this->php_ext}", 'f=' . (int) $forum_id . '&amp;p=' . (int) $post_id . '&amp;' . $action_togle . '=' .  (int) $post_id . '&amp;to_id=' . (int) $poster_id . '&amp;from_id=' . $this->user->data['user_id']);
-		$thank_alt = ($action == 'thanks' ? $this->user->lang['REMOVE_THANKS'] :  $this->user->lang['THANK_POST']) . $poster_name;		$class_icon = $action == 'thanks' ? 'removethanks-icon' : 'thanks-icon';
+		$thank_alt = ($action == 'thanks' ? $this->user->lang['REMOVE_THANKS'] :  $this->user->lang['THANK_POST']) . $poster_name;
+		$class_icon = $action == 'thanks' ? 'removethanks-icon' : 'thanks-icon';
 		$thank_img = "<a  href='" .  $path . "'   data-ajax='togle_thanks' title='" . $thank_alt . "' class='button icon-button " .  $class_icon . "'><span>&nbsp;</span></a>";
 		$message = $this->user->lang['THANKS_INFO_' . $lang_act];
 
@@ -324,18 +325,18 @@ class thanks_ajax_handler
 
 		$this->return = array(
 			'SUCCESS'		=> $message,
-				'POST_ID'				=> $post_id,
-				'POSTER_ID'				=> $poster_id,
-				'USER_ID'				=> $this->user->data['user_id'],
-			    'CLASS_ICON'		=> 'thanks-icon',
-				'THANK_ALT'		=> $this->user->lang['THANK_POST'] . $poster_name,
-				'THANK_PATH'	=> append_sid("{$this->phpbb_root_path}viewtopic.$this->php_ext", 'f=' . (int) $forum_id . '&amp;p=' . (int) $post_id . '&amp;clear_list_thanks=' .  (int) $post_id . '&amp;to_id=' . (int) $poster_id . '&amp;from_id=' . $this->user->data['user_id']),
-				'S_POST_ANONYMOUS'			=> ($poster_id == ANONYMOUS) ? true : false,
-				'POSTER_RECEIVE_COUNT'		=> $l_poster_receive_count,
-				'POSTER_RECEIVE_COUNT_LINK'	=> $this->controller_helper->route('gfksx_thanksforposts_thankslist_controller_user', array('mode' => 'givens', 'author_id' => (int) $poster_id, 'give' => 'false', 'tslash' => '' )),
-				'POSTER_GIVE_COUNT'			=> $l_poster_give_count,
-				'POSTER_GIVE_COUNT_LINK'	=> $this->controller_helper->route('gfksx_thanksforposts_thankslist_controller_user', array('mode' => 'givens', 'author_id' => (int) $poster_id, 'give' => 'true', 'tslash' => '' )),
-				'THANKS_COUNTERS_VIEW'		=> isset($this->config['thanks_counters_view']) ? $this->config['thanks_counters_view'] : false,
+			'POST_ID'					=> $post_id,
+			'POSTER_ID'					=> $poster_id,
+			'USER_ID'					=> $this->user->data['user_id'],
+			'CLASS_ICON'				=> 'thanks-icon',
+			'THANK_ALT'					=> $this->user->lang['THANK_POST'] . $poster_name,
+			'THANK_PATH'				=> append_sid("{$this->phpbb_root_path}viewtopic.$this->php_ext", 'f=' . (int) $forum_id . '&amp;p=' . (int) $post_id . '&amp;clear_list_thanks=' .  (int) $post_id . '&amp;to_id=' . (int) $poster_id . '&amp;from_id=' . $this->user->data['user_id']),
+			'S_POST_ANONYMOUS'			=> ($poster_id == ANONYMOUS) ? true : false,
+			'POSTER_RECEIVE_COUNT'		=> $l_poster_receive_count,
+			'POSTER_RECEIVE_COUNT_LINK'	=> $this->controller_helper->route('gfksx_thanksforposts_thankslist_controller_user', array('mode' => 'givens', 'author_id' => (int) $poster_id, 'give' => 'false', 'tslash' => '' )),
+			'POSTER_GIVE_COUNT'			=> $l_poster_give_count,
+			'POSTER_GIVE_COUNT_LINK'	=> $this->controller_helper->route('gfksx_thanksforposts_thankslist_controller_user', array('mode' => 'givens', 'author_id' => (int) $poster_id, 'give' => 'true', 'tslash' => '' )),
+			'THANKS_COUNTERS_VIEW'		=> isset($this->config['thanks_counters_view']) ? $this->config['thanks_counters_view'] : false,
 			);
 	}
 
