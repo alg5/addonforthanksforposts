@@ -1,7 +1,7 @@
 ﻿﻿(function ($, document) { // Avoid conflicts with other libraries
     function add_ajax_thanks(e, elements) {
         var btnsLike = elements.find('a').filter(function (index) {
-            return $(this).find('i.icon').is('[class*="thanks-icon"]');
+            return $(this).find('i.icon').is('.fa-thumbs-o-up,.fa-thumbs-o-down');
         });
 //        console.log(btnsLike);
         $(btnsLike).on('click', function (e) {
@@ -13,7 +13,7 @@
                 return false;
             }
             $(btnsLike).addClass("disabled");
-            var action = $(this).find('i.icon').hasClass("thanks-icon") ? 'thanks' : 'rthanks';
+            var action = $(this).find('i.icon').hasClass("fa-thumbs-o-up") ? 'thanks' : 'rthanks';
             //console.log('action = ' + action);
             var post_block = $(this).parents('div.post');
             // console.log(post_block);
@@ -84,7 +84,7 @@
 
     function togle_thanks(data) {
         var btnsLike = $('a').filter(function (index) {
-            return $(this).find('i.icon').is('[class*="thanks-icon"]');
+            return $(this).find('i.icon').is('.fa-thumbs-o-up,.fa-thumbs-o-down');
         });
         //set all thanks button enabled
         $(btnsLike).removeClass("disabled");
@@ -101,12 +101,12 @@
         if (data.IS_ALLOW_REMOVE_THANKS) {
 
             $("#lnk_thanks_post" + data.POST_ID).attr('title', data.THANK_ALT).attr('href', data.THANK_PATH.replace(/&amp;/g, '&'));
-            $("#lnk_thanks_post" + data.POST_ID).find('i').removeClass("thanks-icon").removeClass("removethanks-icon").addClass(data.CLASS_ICON);
+            $("#lnk_thanks_post" + data.POST_ID).find('i').removeClass("fa-thumbs-o-up").removeClass("fa-thumbs-o-down").addClass(data.CLASS_ICON);
 
             //patch for quick links
             $(".clone-first a#lnk_thanks_post" + data.POST_ID).attr('title', data.THANK_ALT).attr('href', data.THANK_PATH.replace(/&amp;/g, '&'));
             $(".clone-first a#lnk_thanks_post" + data.POST_ID).find('span').html(data.THANK_ALT_SHORT);
-            $(".clone-first a#lnk_thanks_post" + data.POST_ID).find('i').removeClass("thanks-icon").removeClass("removethanks-icon").addClass(data.CLASS_ICON);
+            $(".clone-first a#lnk_thanks_post" + data.POST_ID).find('i').removeClass("fa-thumbs-o-up").removeClass("fa-thumbs-o-down").addClass(data.CLASS_ICON);
          }
          else
          {
@@ -173,7 +173,7 @@
 
         //update thanks img
         $("#lnk_thanks_post" + data.POST_ID).attr('title', data.THANK_ALT).attr('href', data.THANK_PATH.replace(/&amp;/g, '&'));
-        $("#lnk_thanks_post" + data.POST_ID).find('i').removeClass("thanks-icon").removeClass("removethanks-icon").addClass(data.CLASS_ICON);
+        $("#lnk_thanks_post" + data.POST_ID).find('i').removeClass("fa-thumbs-o-up").removeClass("fa-thumbs-o-down").addClass(data.CLASS_ICON);
 
         //update profile
         update_profile(data)

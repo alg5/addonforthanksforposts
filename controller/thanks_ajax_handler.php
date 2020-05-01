@@ -257,7 +257,7 @@ class thanks_ajax_handler
 		$action_togle = $action == 'thanks' ? 'rthanks' : 'thanks' ;
 		$path = append_sid("{$this->phpbb_root_path}viewtopic.{$this->php_ext}", 'f=' . (int) $forum_id . '&amp;p=' . (int) $post_id . '&amp;' . $action_togle . '=' .  (int) $post_id . '&amp;to_id=' . (int) $poster_id . '&amp;from_id=' . $this->user->data['user_id']);
 		$thank_alt = ($action == 'thanks' ? $this->user->lang['REMOVE_THANKS'] :  $this->user->lang['THANK_POST']) . $poster_name;
-		$class_icon = $action == 'thanks' ? 'removethanks-icon' : 'thanks-icon';
+		$class_icon = $action == 'thanks' ? 'fa-thumbs-o-down' : 'fa-thumbs-o-up';
 		$thank_img = "<a  href='" .  $path . "'   data-ajax='togle_thanks' title='" . $thank_alt . "' class='button icon-button " .  $class_icon . "'><span>&nbsp;</span></a>";
 		$message = $this->user->lang['THANKS_INFO_' . $lang_act];
 
@@ -267,7 +267,7 @@ class thanks_ajax_handler
 			'POST_ID'				=>  $post_id,
 			'POSTER_ID'				=>  $poster_id,
 			'USER_ID'										=>  $this->user->data['user_id'],
-			'CLASS_ICON'									=> $action == 'thanks' ? 'removethanks-icon' : 'thanks-icon',
+			'CLASS_ICON'									=> $class_icon,
 			'S_THANKS_POST_REPUT_VIEW'		=> isset($this->config['thanks_post_reput_view']) ? (bool) $this->config['thanks_post_reput_view'] : false,
 			'THANK_ALT'				=> ($action == 'thanks' ? $this->user->lang['REMOVE_THANKS'] :  $this->user->lang['THANK_POST']) . $poster_name,
 			'THANK_ALT_SHORT'				=> ($action == 'thanks' ? $this->user->lang['REMOVE_THANKS_SHORT'] :  $this->user->lang['THANK_POST_SHORT']),
@@ -328,7 +328,7 @@ class thanks_ajax_handler
 			'POST_ID'					=> $post_id,
 			'POSTER_ID'					=> $poster_id,
 			'USER_ID'					=> $this->user->data['user_id'],
-			'CLASS_ICON'				=> 'thanks-icon',
+			'CLASS_ICON'				=> 'fa-thumbs-o-up',
 			'THANK_ALT'					=> $this->user->lang['THANK_POST'] . $poster_name,
 			'THANK_PATH'				=> append_sid("{$this->phpbb_root_path}viewtopic.$this->php_ext", 'f=' . (int) $forum_id . '&amp;p=' . (int) $post_id . '&amp;clear_list_thanks=' .  (int) $post_id . '&amp;to_id=' . (int) $poster_id . '&amp;from_id=' . $this->user->data['user_id']),
 			'S_POST_ANONYMOUS'			=> ($poster_id == ANONYMOUS) ? true : false,
