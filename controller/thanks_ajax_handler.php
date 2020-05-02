@@ -40,7 +40,10 @@ class thanks_ajax_handler
 	/** @var string */
 	protected $posts_table;
 
-	/** @var rxu\PostsMerging\core\helper  */
+	/** @var \phpbb\path_helper */
+	protected $path_helper;
+
+	/** @var rxu\thanksforposts\core\helper */
 	protected $gfksx_helper;
 
 	/** @var array */
@@ -58,13 +61,14 @@ class thanks_ajax_handler
 	* @param string								$thanks_table		ThanksForPost table name
 	* @param string								$users_table		Users table name
 	* @param string								$posts_table		Posts table name
+	* @param  \phpbb\path_helper				$path_helper		The path helper object
 	* @param  rxu\thanksforposts\core\helper	$gfksx_helper		The main extension helper object
 	* @param array								$return_error		array
 
 	* @access public
 	*/
 
-	public function __construct(\phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\auth\auth $auth, \phpbb\user $user, $phpbb_root_path, $php_ext, \phpbb\controller\helper $controller_helper, $thanks_table, $users_table, $posts_table, \gfksx\thanksforposts\core\helper $gfksx_helper = null)
+	public function __construct(\phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\auth\auth $auth, \phpbb\user $user, $phpbb_root_path, $php_ext, \phpbb\controller\helper $controller_helper, $thanks_table, $users_table, $posts_table, \phpbb\path_helper $path_helper, \gfksx\thanksforposts\core\helper $gfksx_helper = null)
 	{
 		$this->config = $config;
 		$this->db = $db;
@@ -76,6 +80,7 @@ class thanks_ajax_handler
 		$this->thanks_table = $thanks_table;
 		$this->users_table = $users_table;
 		$this->posts_table = $posts_table;
+		$this->path_helper = $path_helper;
 		$this->gfksx_helper = $gfksx_helper;
 
 		$this->return = array(); // save returned data in here
@@ -255,7 +260,8 @@ class thanks_ajax_handler
 		}
 		$this->db->sql_freeresult($result);
 		$action_togle = $action == 'thanks' ? 'rthanks' : 'thanks' ;
-		$path = append_sid("{$this->phpbb_root_path}viewtopic.{$this->php_ext}", 'f=' . (int) $forum_id . '&amp;p=' . (int) $post_id . '&amp;' . $action_togle . '=' .  (int) $post_id . '&amp;to_id=' . (int) $poster_id . '&amp;from_id=' . $this->user->data['user_id']);
+		$viewtopic_url = append_sid("{$this->phpbb_root_path}viewtopic.{$this->php_ext}", 'f=' . (int) $forum_id . '&amp;p=' . (int) $post_id . '&amp;' . $action_togle . '=' .  (int) $post_id . '&amp;to_id=' . (int) $poster_id . '&amp;from_id=' . $this->user->data['user_id']);
+		$thanks_path = $this->path_helper->remove_web_root_path($viewtopic_url);
 		$thank_alt = ($action == 'thanks' ? $this->user->lang['REMOVE_THANKS'] :  $this->user->lang['THANK_POST']) . $poster_name;
 		$class_icon = $action == 'thanks' ? 'fa-thumbs-o-down' : 'fa-thumbs-o-up';
 		$thank_img = "<a  href='" .  $path . "'   data-ajax='togle_thanks' title='" . $thank_alt . "' class='button icon-button " .  $class_icon . "'><span>&nbsp;</span></a>";
@@ -288,7 +294,7 @@ class thanks_ajax_handler
 			'POSTER_GIVE_COUNT'				=> $l_poster_give_count,
 			'POSTER_GIVE_COUNT_LINK'	=> $this->controller_helper->route('gfksx_thanksforposts_thankslist_controller_user', array('mode' => 'givens', 'author_id' => (int) $poster_id, 'give' => 'true', 'tslash' => '' )),
 			'THANK_IMG'					=> $thank_img,
-			'THANK_PATH'				=> $path,
+			'THANK_PATH'				=> $thanks_path,
 			'IS_ALLOW_REMOVE_THANKS'	=> isset($this->config['remove_thanks']) ? (bool) $this->config['remove_thanks'] : true,
 		);
 	}
@@ -321,6 +327,8 @@ class thanks_ajax_handler
 		$l_poster_receive_count = ($poster_receive_count) ? $this->user->lang('THANKS', $poster_receive_count) : '';
 		$this->db->sql_freeresult($result);
 
+		$viewtopic_url = append_sid("{$this->phpbb_root_path}viewtopic.$this->php_ext", 'f=' . (int) $forum_id . '&amp;p=' . (int) $post_id . '&amp;clear_list_thanks=' .  (int) $post_id . '&amp;to_id=' . (int) $poster_id . '&amp;from_id=' . $this->user->data['user_id']);
+		$thanks_path = $this->path_helper->remove_web_root_path($viewtopic_url);
 		$message = $this->user->lang['CLEAR_LIST_THANKS_POST'];
 
 		$this->return = array(
@@ -330,7 +338,7 @@ class thanks_ajax_handler
 			'USER_ID'					=> $this->user->data['user_id'],
 			'CLASS_ICON'				=> 'fa-thumbs-o-up',
 			'THANK_ALT'					=> $this->user->lang['THANK_POST'] . $poster_name,
-			'THANK_PATH'				=> append_sid("{$this->phpbb_root_path}viewtopic.$this->php_ext", 'f=' . (int) $forum_id . '&amp;p=' . (int) $post_id . '&amp;clear_list_thanks=' .  (int) $post_id . '&amp;to_id=' . (int) $poster_id . '&amp;from_id=' . $this->user->data['user_id']),
+			'THANK_PATH'				=> $thanks_path,
 			'S_POST_ANONYMOUS'			=> ($poster_id == ANONYMOUS) ? true : false,
 			'POSTER_RECEIVE_COUNT'		=> $l_poster_receive_count,
 			'POSTER_RECEIVE_COUNT_LINK'	=> $this->controller_helper->route('gfksx_thanksforposts_thankslist_controller_user', array('mode' => 'givens', 'author_id' => (int) $poster_id, 'give' => 'false', 'tslash' => '' )),
