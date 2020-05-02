@@ -22,4 +22,5 @@ services:
             - '%tables.thanks%'
             - '%tables.users%'
             - '%tables.posts%'
+            - '@path_helper'
             - '@?gfksx.thanksforposts.helper'
