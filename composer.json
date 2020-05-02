@@ -3,7 +3,7 @@
     "type": "phpbb-extension",
     "description": "Adds ajax functionality to main extension to update result of set/delete likes without reloading the page",
     "homepage": "https://github.com/alg5/addonforthanksforposts",
-    "version": "3.0.8",
+    "version": "3.0.9",
     "time": "2018-03-24",
     "license": "GPL-2.0",
     "authors": [

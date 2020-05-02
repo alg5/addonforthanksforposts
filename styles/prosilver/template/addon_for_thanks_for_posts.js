@@ -1,20 +1,16 @@
 ﻿﻿(function ($, document) { // Avoid conflicts with other libraries
     function add_ajax_thanks(e, elements) {
-        var btnsLike = elements.find('a').filter(function (index) {
-            return $(this).find('i.icon').is('.fa-thumbs-o-up,.fa-thumbs-o-down');
+        var btnsLike =$('i.icon').filter(function (index, item) {
+		return $(this).is('.fa-thumbs-o-up,.fa-thumbs-o-down');
         });
-//        console.log(btnsLike);
         $(btnsLike).on('click', function (e) {
             e.preventDefault();
-
-            //set all thanks button invisible
-            //$(btnsLike).hide();
-            if ($(this).hasClass("disabled")) {
+             if ($(this).hasClass("disabled")) {
                 return false;
             }
-            $(btnsLike).addClass("disabled");
-            var action = $(this).find('i.icon').hasClass("fa-thumbs-o-up") ? 'thanks' : 'rthanks';
-            //console.log('action = ' + action);
+           //set all thanks button disabled
+             $(btnsLike).addClass("disabled");
+            var action = $(this).hasClass("fa-thumbs-o-up") ? 'thanks' : 'rthanks';
             var post_block = $(this).parents('div.post');
             // console.log(post_block);
             var post_id;
@@ -37,13 +33,11 @@
             });
         });
 
-        elements.find("div.postbody").on('click', 'a[id^="clear_list_thanks"]', function (e) {
+        $("div.postbody").on('click', 'a[id^="clear_list_thanks"]', function (e) {
             e.preventDefault();
             var post_id = $(this).attr('id').replace(/clear_list_thanks/g, '');
-            var post_block = $(this).parent().parent().parent().parent().parent().parent().parent();
-            var poster_id = $(post_block).find('a.username').attr('id');
-
-            var lnk = $(this);
+            var url = $('#lnk_thanks_post' + post_id).attr('href');
+            var poster_id = $.urlParam('to_id', url);//            
             var n = noty({
                 text: LA_CLEAR_LIST_THANKS_CONFIRM,
                 type: 'notification',
@@ -83,9 +77,9 @@
     $('#qr_posts').on('qr_loaded', add_ajax_thanks);
 
     function togle_thanks(data) {
-        var btnsLike = $('a').filter(function (index) {
-            return $(this).find('i.icon').is('.fa-thumbs-o-up,.fa-thumbs-o-down');
-        });
+	var btnsLike =$('i.icon').filter(function (index, item) {
+		return $(this).is('.fa-thumbs-o-up,.fa-thumbs-o-down');
+        });		
         //set all thanks button enabled
         $(btnsLike).removeClass("disabled");
 
