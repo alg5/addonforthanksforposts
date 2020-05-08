@@ -151,6 +151,9 @@
         }
         //update profile
         update_profile(data)
+		
+	//update text with [hide]BBCODE
+        update_text(data)
     }
 
     function list_thanks_for_post_cleared(data) {
@@ -197,7 +200,18 @@
             });
         }
     }
-
+	function update_text(data)
+	{
+		if (data.IS_CHANGE_TEXT && data.CORRETED_TEXT_BBCODE != '')
+		{
+			console.log(data);
+			var content = $("#p"+ data.POST_ID).find("div.content");
+			
+			console.log(content);
+			$(content).html(data.CORRETED_TEXT_BBCODE);
+			
+		}
+	}
     //creates a new jQuery UI notification message
     function output_info_new(message, type, expire, is_reload) {
         if (type == null)

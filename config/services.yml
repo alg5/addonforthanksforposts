@@ -23,4 +23,6 @@ services:
             - '%tables.users%'
             - '%tables.posts%'
             - '@path_helper'
+            - '@ext.manager'
+            - '@service_container'
             - '@?gfksx.thanksforposts.helper'
