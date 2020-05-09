@@ -87,7 +87,7 @@ class thanks_ajax_handler
 
 		$this->return = array(); // save returned data in here
 		$this->error = array(); // save errors in here
-		
+
 		$this-> b_changeText = false;
 		$this-> correctedText = '';
 		$this-> correctedTextHideBbcode = '';
@@ -434,46 +434,53 @@ class thanks_ajax_handler
 	private function isChangeText($action, $topic_id, $post_id)
 	{
 		$this-> correctedTextHideBbcode = '';
-		if(!$this->phpbb_extension_manager->is_enabled('marcovo/hideBBcode'))
+		if (!$this->phpbb_extension_manager->is_enabled('marcovo/hideBBcode'))
 		{
 			return false;
 		}
-		if(!$this->config['hidebbcode_unhide_tfp'])
+
+		if (!$this->config['hidebbcode_unhide_tfp'])
 		{
 			return false;
 		}
+
 		// If moderator or admin auto unhide always
 		if ($this->auth->acl_get('m_', $forum_id))
 		{
 			return false;
-		}		
+		}
+
 		//is [hide]BBCode exist in the post
 		$sql = "SELECT post_text, bbcode_uid, bbcode_bitfield FROM " . POSTS_TABLE . " WHERE post_id = " . $post_id ;
 		$result = $this->db->sql_query($sql);
 		$post_data = $this->db->sql_fetchrow($result);
-		$post_text = $post_data['post_text'];	
+		$post_text = $post_data['post_text'];
 		$bbcode_uid = $post_data['bbcode_uid'];
 		$bbcode_bitfield = $post_data['bbcode_bitfield'];
 //		$q_text = generate_text_for_display($q_data['post_text'], $q_uid, $q_bitfield, 7)  ;
 		$this->db->sql_freeresult($result);
 		$pos = strrpos($post_text, '[/hide]');
+
 		if ($pos === false)
 		{
 			return false;
 		}
+
 		// Check if the topic viewer has posted in the topic
 		$sql = 'SELECT poster_id, topic_id 	FROM '  . POSTS_TABLE .
 			' WHERE topic_id =' . $topic_id .
-			' AND poster_id = ' . $this->user->data['user_id']; 
+			' AND poster_id = ' . $this->user->data['user_id'];
 
 		$result = $this->db->sql_query($sql);
 		$topic_replied = $this->db->sql_affectedrows($result) ? true : false;
 		$this->db->sql_freeresult($result);
-		if($topic_replied)
+
+		if ($topic_replied)
 		{
 			return false;
 		}
-		if($action == 'thanks')
+
+		if ($action == 'thanks')
 		{
 			$this->user->add_lang_ext('marcovo/hideBBcode', 'hide_bbcode');
 //			$post_text = str_replace('<s>[hide]</s>', '<s>[hide]</s>'.'{unhide:'.$this->hbuid.'}', $post_text);
