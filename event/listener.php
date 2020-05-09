@@ -26,16 +26,19 @@ class listener implements EventSubscriberInterface
 	* @access public
 	*/
 
-	public function __construct(\phpbb\template\template $template, \phpbb\controller\helper $controller_helper)
+	public function __construct(\phpbb\config\config $config, \phpbb\template\template $template, \phpbb\controller\helper $controller_helper, \phpbb\path_helper $path_helper)
 	{
+		$this->config = $config;
 		$this->template = $template;
 		$this->controller_helper = $controller_helper;
+		$this->path_helper = $path_helper;
 	}
 
 	static public function getSubscribedEvents()
 	{
 		return array(
 			'core.viewtopic_modify_page_title'  => 'viewtopic_modify_page_title',
+			'core.text_formatter_s9e_render_before' => 'set_smilies_path',
 		);
 	}
 
@@ -45,4 +48,11 @@ class listener implements EventSubscriberInterface
 			'U_ADDONFORTHANKSFORPOSTS_PATH'	=> $this->controller_helper->route('alg_addonforthanksforposts_controller_main'),
 		));
 	}
+
+	public function set_smilies_path($event)
+	{
+		$root_path = (defined('PHPBB_USE_BOARD_URL_PATH') && PHPBB_USE_BOARD_URL_PATH) ? generate_board_url() . '/' : $this->path_helper->get_web_root_path();
+		$event['renderer']->set_smilies_path($this->path_helper->remove_web_root_path($root_path) . $this->config['smilies_path']);
+	}
+
 }

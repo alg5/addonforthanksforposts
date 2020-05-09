@@ -5,8 +5,10 @@ services:
     alg.addonforthanksforposts.listener:
         class: alg\addonforthanksforposts\event\listener
         arguments:
+            - '@config'
             - '@template'
             - '@controller.helper'
+            - '@path_helper'
         tags:
             - { name: event.listener }
     alg.addonforthanksforposts.thanks_ajax_handler:
