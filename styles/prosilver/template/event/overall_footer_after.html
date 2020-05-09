@@ -1,15 +1,15 @@
 {% if S_TOPIC_ID && S_FORUM_THANKS %}
 	<script type="text/javascript" >
-	   var LA_CLEAR_LIST_THANKS = '{L_CLEAR_LIST_THANKS}';
-	   var LA_REPUT = '{L_REPUT}';
-	   var LA_RECEIVED = '{L_RECEIVED}';
-	   var LA_GIVEN = '{L_GIVEN}';
-	   var LA_CLEAR_LIST_THANKS_CONFIRM = '{L_CLEAR_LIST_THANKS_CONFIRM}';
-	   var LA_YES = '{L_YES}';
-	   var LA_NO = '{L_NO}';
-	   var U_ADDONFORTHANKSFORPOSTS_PATH = '{U_ADDONFORTHANKSFORPOSTS_PATH}';
-	   var forum_id = parseInt('{S_FORUM_ID}');
-	   var topic_id = parseInt('{S_TOPIC_ID}');
+	   var LA_CLEAR_LIST_THANKS = "{{ lang('CLEAR_LIST_THANKS') }}";
+	   var LA_REPUT = "{{ lang('REPUT') }}";
+	   var LA_RECEIVED = "{{ lang('RECEIVED') }}";
+	   var LA_GIVEN = "{{ lang('GIVEN') }}";
+	   var LA_CLEAR_LIST_THANKS_CONFIRM = "{{ lang('CLEAR_LIST_THANKS_CONFIRM') }}";
+	   var LA_YES = "{{ lang('YES') }}";
+	   var LA_NO = "{{ lang('NO') }}";
+	   var U_ADDONFORTHANKSFORPOSTS_PATH = '{{ U_ADDONFORTHANKSFORPOSTS_PATH }}';
+	   var forum_id = parseInt('{{ S_FORUM_ID }}');
+	   var topic_id = parseInt('{{ S_TOPIC_ID }}');
 	</script>
 	{% INCLUDEJS '@alg_addonforthanksforposts/jquery.noty.js' %}
 	{% INCLUDEJS '@alg_addonforthanksforposts/default.js' %}

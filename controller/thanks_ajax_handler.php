@@ -68,7 +68,7 @@ class thanks_ajax_handler
 	* @access public
 	*/
 
-	public function __construct(\phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\auth\auth $auth, \phpbb\user $user, $phpbb_root_path, $php_ext, \phpbb\controller\helper $controller_helper, $thanks_table, $users_table, $posts_table, \phpbb\path_helper $path_helper, \phpbb\extension\manager $phpbb_extension_manager, $phpbb_container, \gfksx\thanksforposts\core\helper $gfksx_helper = null)
+	public function __construct(\phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\auth\auth $auth, \phpbb\user $user, $phpbb_root_path, $php_ext, \phpbb\controller\helper $controller_helper, $thanks_table, $users_table, $posts_table, \phpbb\path_helper $path_helper, \phpbb\extension\manager $phpbb_extension_manager, \gfksx\thanksforposts\core\helper $gfksx_helper = null)
 	{
 		$this->config = $config;
 		$this->db = $db;
@@ -82,18 +82,12 @@ class thanks_ajax_handler
 		$this->posts_table = $posts_table;
 		$this->path_helper = $path_helper;
 		$this->phpbb_extension_manager = $phpbb_extension_manager;
-		$this->phpbb_container = $phpbb_container;
 		$this->gfksx_helper = $gfksx_helper;
 
 		$this->return = array(); // save returned data in here
 		$this->error = array(); // save errors in here
-
 		$this-> b_changeText = false;
-		$this-> correctedText = '';
 		$this-> correctedTextHideBbcode = '';
-		$this-> bbcode_uid = '';
-		$this-> bbcode_bitfield = '';
-		$this->hbuid = substr(md5(mt_rand()), 0, 10);
 	}
 
 	public function main($action, $poster, $forum, $topic, $post)
@@ -107,6 +101,7 @@ class thanks_ajax_handler
 			$json_response = new \phpbb\json_response;
 			$json_response->send($return_error);
 		}
+		//patch for compatibiliti with [hide]BBCODE
 		$this-> b_changeText = $this->isChangeText($action, $topic, $post);
 
 		// If the main extension is not installed, generate error
@@ -483,7 +478,6 @@ class thanks_ajax_handler
 		if ($action == 'thanks')
 		{
 			$this->user->add_lang_ext('marcovo/hideBBcode', 'hide_bbcode');
-//			$post_text = str_replace('<s>[hide]</s>', '<s>[hide]</s>'.'{unhide:'.$this->hbuid.'}', $post_text);
 			$post_text = str_replace(array('<HIDE><s>[hide]</s>', '<e>[/hide]</e></HIDE>'), array('{hide}', '{/hide}'), $post_text);
 			$this-> correctedTextHideBbcode = generate_text_for_display($post_text, $bbcode_uid, $bbcode_bitfield, 7) ;
 			$hide_open = '<dl class="hidebox hb_unhide"><dt>' . $this->user->lang['HIDEBB_MESSAGE_UNHIDE'] . '</dt><dd>';
@@ -495,9 +489,6 @@ class thanks_ajax_handler
 		{
 			$this-> correctedTextHideBbcode = generate_text_for_display($post_text, $bbcode_uid, $bbcode_bitfield, 7) ;
 		}
-		$this-> correctedText = $post_text;
-		$this-> bbcode_uid = $bbcode_uid;
-		$this-> bbcode_bitfield = $bbcode_bitfield;
 		return true;
 	}
 }
