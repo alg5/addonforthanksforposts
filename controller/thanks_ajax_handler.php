@@ -252,7 +252,7 @@ class thanks_ajax_handler
 		$l_poster_give_count = ($poster_give_count) ? $this->user->lang('THANKS', $poster_give_count) : '';
 		$thanks_number = 0;
 		$thanks_list =  $this->get_thanks($post_id, $thanks_number);
-		$post_reput = ($thanks_number != 0) ? round($thanks_number / ($max_post_thanks / 100), $this->config['thanks_number_digits']) . '%' : '';
+		$post_reput = ($thanks_number != 0) ? round($thanks_number / ($max_post_thanks / 100), (int) $this->config['thanks_number_digits']) . '%' : '';
 		$lang_act = $action == 'thanks' ?  'GIVE' : 'REMOVE';
 		$poster_name = '';
 		$poster_name_full =  '';
@@ -269,7 +269,7 @@ class thanks_ajax_handler
 		$thanks_path = $this->path_helper->remove_web_root_path($viewtopic_url);
 		$thank_alt = ($action == 'thanks' ? $this->user->lang['REMOVE_THANKS'] :  $this->user->lang['THANK_POST']) . $poster_name;
 		$class_icon = $action == 'thanks' ? 'fa-thumbs-o-down' : 'fa-thumbs-o-up';
-		$thank_img = "<a  href='" .  $path . "'   data-ajax='togle_thanks' title='" . $thank_alt . "' class='button icon-button " .  $class_icon . "'><span>&nbsp;</span></a>";
+		$thank_img = "<a  href='" .  $thanks_path . "'   data-ajax='togle_thanks' title='" . $thank_alt . "' class='button icon-button " .  $class_icon . "'><span>&nbsp;</span></a>";
 		$message = $this->user->lang['THANKS_INFO_' . $lang_act];
 
 		$this->return = array(
@@ -301,7 +301,6 @@ class thanks_ajax_handler
 			'THANK_IMG'					=> $thank_img,
 			'THANK_PATH'				=> $thanks_path,
 			'IS_ALLOW_REMOVE_THANKS'	=> isset($this->config['remove_thanks']) ? (bool) $this->config['remove_thanks'] : true,
-			'THANK_CORRETED_TEXT'				=> $this->correctedText,
 			'CORRETED_TEXT_BBCODE'				=> $this-> correctedTextHideBbcode,
 			'IS_CHANGE_TEXT'				=> $this-> b_changeText,
 		);
