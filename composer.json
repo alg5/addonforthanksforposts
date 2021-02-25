@@ -27,8 +27,8 @@
         },
         "version-check": {
             "host": "alg5.github.io",
-            "directory": "/versions_3.2",
-            "filename": "AddonForThanksForPosts.json"
+            "directory": "/versions_3_X",
+            "filename": "addonforthanksforposts.json"
         }
     }
 }
