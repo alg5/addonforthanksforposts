@@ -3,16 +3,18 @@
         var btnsLike =$('i.icon').filter(function (index, item) {
 		return $(this).is('.fa-thumbs-o-up,.fa-thumbs-o-down');
         });
-        $(btnsLike).on('click', function (e) {
-            e.preventDefault();
+        let lnk_thanks_posts = document.querySelectorAll('*[id^="lnk_thanks_post"]');
+       // $(btnsLike).on('click', function (e) {
+         $(lnk_thanks_posts).on('click', function (e) {
+           e.preventDefault();
              if ($(this).hasClass("disabled")) {
                 return false;
             }
            //set all thanks button disabled
-             $(btnsLike).addClass("disabled");
-            var action = $(this).hasClass("fa-thumbs-o-up") ? 'thanks' : 'rthanks';
+            // $(btnsLike).addClass("disabled");
+             $(lnk_thanks_posts).addClass("disabled");
+            var action = $(this).find('i').hasClass("fa-thumbs-o-up") ? 'thanks' : 'rthanks';
             var post_block = $(this).parents('div.post');
-            // console.log(post_block);
             var post_id;
             if ($(post_block).attr("id") == 'post-article') {
                 post_id = $(post_block).prev().attr('id').replace(/p/g, '');
@@ -21,7 +23,13 @@
             }
             var url = $('#lnk_thanks_post' + post_id).attr('href');
             var poster_id = $.urlParam('to_id', url);
+            // console.log('url = ' + url);
+            // console.log('poster_id = ' + poster_id);
+            // console.log('U_ADDONFORTHANKSFORPOSTS_PATH = ' + U_ADDONFORTHANKSFORPOSTS_PATH);
+            //patch remove sid
+            U_ADDONFORTHANKSFORPOSTS_PATH = U_ADDONFORTHANKSFORPOSTS_PATH.split("/?sid")[0];
             var path = U_ADDONFORTHANKSFORPOSTS_PATH + action + '/' + poster_id + '/' + forum_id + '/' + topic_id + '/' + post_id;
+            console.log("path = " + path);
             $.ajax({
                 type: 'POST',
                 dataType: 'json',
@@ -79,10 +87,12 @@
     function togle_thanks(data) {
 	var btnsLike =$('i.icon').filter(function (index, item) {
 		return $(this).is('.fa-thumbs-o-up,.fa-thumbs-o-down');
-        });		
+        });	
+        let lnk_thanks_posts = document.querySelectorAll('*[id^="lnk_thanks_post"]');
+        // console.log(lnk_thanks_posts);        
         //set all thanks button enabled
-        $(btnsLike).removeClass("disabled");
-
+        // $(btnsLike).removeClass("disabled");
+        $(lnk_thanks_posts).removeClass("disabled");
         if (data['ERROR']) {
             for (i = 0; i < data['ERROR'].length; i++) {
                 output_info_new(data['ERROR'][i], 'error');
