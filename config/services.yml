@@ -21,6 +21,7 @@ services:
             - '%core.root_path%'
             - '%core.php_ext%'
             - '@controller.helper'
+            - '@dispatcher'
             - '%tables.thanks%'
             - '%tables.users%'
             - '%tables.posts%'

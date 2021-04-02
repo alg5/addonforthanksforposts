@@ -28,8 +28,12 @@ class thanks_ajax_handler
 
 	/** @var string phpEx */
 	protected $php_ext;
+
 	/** @var \phpbb\controller\helper */
 	protected $controller_helper;
+
+	/** @var \phpbb\event\dispatcher_interface */
+	protected $phpbb_dispatcher;
 
 	/** @var string */
 	protected $thanks_table;
@@ -58,6 +62,7 @@ class thanks_ajax_handler
 	* @param string								$phpbb_root_path	phpbb_root_path
 	* @param string								$php_ext			phpEx
 	* @param \phpbb\controller\helper			$controller_helper	Controller helper object
+	* @param \phpbb\event\dispatcher_interface  $phpbb_dispatcher   Event dispatcher object
 	* @param string								$thanks_table		ThanksForPost table name
 	* @param string								$users_table		Users table name
 	* @param string								$posts_table		Posts table name
@@ -68,7 +73,13 @@ class thanks_ajax_handler
 	* @access public
 	*/
 
-	public function __construct(\phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\auth\auth $auth, \phpbb\user $user, $phpbb_root_path, $php_ext, \phpbb\controller\helper $controller_helper, $thanks_table, $users_table, $posts_table, \phpbb\path_helper $path_helper, \phpbb\extension\manager $phpbb_extension_manager, \gfksx\thanksforposts\core\helper $gfksx_helper = null)
+	public function __construct(\phpbb\config\config $config, \phpbb\db\driver\driver_interface $db,
+								\phpbb\auth\auth $auth, \phpbb\user $user, $phpbb_root_path, $php_ext,
+								\phpbb\controller\helper $controller_helper,
+								\phpbb\event\dispatcher_interface $phpbb_dispatcher,
+								$thanks_table, $users_table, $posts_table,
+								\phpbb\path_helper $path_helper, \phpbb\extension\manager $phpbb_extension_manager,
+								\gfksx\thanksforposts\core\helper $gfksx_helper = null)
 	{
 		$this->config = $config;
 		$this->db = $db;
@@ -77,6 +88,7 @@ class thanks_ajax_handler
 		$this->phpbb_root_path = $phpbb_root_path;
 		$this->php_ext = $php_ext;
 		$this->controller_helper = $controller_helper;
+		$this->phpbb_dispatcher = $phpbb_dispatcher;
 		$this->thanks_table = $thanks_table;
 		$this->users_table = $users_table;
 		$this->posts_table = $posts_table;
@@ -146,6 +158,21 @@ class thanks_ajax_handler
 	private function thanks_for_post($action, $poster_id, $forum_id, $topic_id, $post_id)
 	{
 		$user_id = (int) $this->user->data['user_id'];
+
+		/**
+		 *
+		 *
+		 * @event alg.addonforthanksforposts.thanks_for_posts_before
+		 * @var	string		action
+		 * @var	int			poster_id
+		 * @var	int			forum_id
+		 * @var	int			topic_id
+		 * @var	int			post_id
+		 * @var	int			user_id
+		 */
+		$vars = ['action', 'poster_id', 'forum_id', 'topic_id', 'post_id', 'user_id'];
+		extract($this->phpbb_dispatcher->trigger_event('alg.addonforthanksforposts.thanks_for_posts_before', compact($vars)));
+
 		if ($this->user->data['user_type'] != USER_IGNORE && !empty($poster_id))
 		{
 			switch ($action)
@@ -285,6 +312,8 @@ class thanks_ajax_handler
 			'S_THANKS_REPUT_GRAPHIC' 			=> isset($this->config['thanks_reput_graphic']) ? (bool) $this->config['thanks_reput_graphic'] : false,
 			'THANKS_REPUT_GRAPHIC_WIDTH'	=> isset($this->config['thanks_reput_level']) ? (isset($this->config['thanks_reput_height']) ? sprintf('%dpx', $this->config['thanks_reput_level']*$this->config['thanks_reput_height']) : false) : false,
 			'THANKS_REPUT_HEIGHT'		=> isset($this->config['thanks_reput_height']) ? sprintf('%dpx', $this->config['thanks_reput_height']) : false,
+			'THANKS_REPUT_IMAGE' 		=> $this->config['thanks_reput_image'] ? generate_board_url() . '/' . $this->config['thanks_reput_image'] : '',
+			'THANKS_REPUT_IMAGE_BACK'	=> $this->config['thanks_reput_image_back'] ? generate_board_url() . '/' . $this->config['thanks_reput_image_back'] : '',
 			'THANKS'					=> $thanks_list,
 			'THANKS_POSTLIST_VIEW'		=> isset($this->config['thanks_postlist_view']) ? (bool) $this->config['thanks_postlist_view'] : false,
 			'S_MOD_THANKS'				=> $this->auth->acl_get('m_thanks') ? true :false,
@@ -303,6 +332,7 @@ class thanks_ajax_handler
 			'IS_ALLOW_REMOVE_THANKS'	=> isset($this->config['remove_thanks']) ? (bool) $this->config['remove_thanks'] : true,
 			'CORRETED_TEXT_BBCODE'				=> $this-> correctedTextHideBbcode,
 			'IS_CHANGE_TEXT'				=> $this-> b_changeText,
+			'THANKS_COUNT'				=> $thanks_number,
 		);
 	}
 
@@ -395,12 +425,18 @@ class thanks_ajax_handler
 			else
 			{
 				$return .= $comma;
-				$return .= get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']);
+				$nickname = get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']);
 				if (isset($this->config['thanks_time_view']) ? $this->config['thanks_time_view'] : false)
 				{
-					$return .= ($row['thanks_time']) ? ' ('.$this->user->format_date($row['thanks_time'], false, ($view == 'print') ? true : false) . ')' : '';
+					$return .= ($row['thanks_time']) ? '<span title="'.$this->user->format_date($row['thanks_time'], false, ($view == 'print') ? true : false) . '">' : '';
+					$return .= $nickname;
+					$return .= '</span>';
 				}
-				$comma = ' &bull; ';
+				else
+				{
+					$return .= $nickname;
+				}
+				$comma = ', ';
 			}
 			$count++;
 		}
